@@ -13,6 +13,9 @@
     <Filter Include="program\Managers">
       <UniqueIdentifier>{39da40ce-37dd-4919-97ef-9f07a0fb2ed0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="program\Controllers">
+      <UniqueIdentifier>{2284cae2-e913-4ef1-9ab4-3f4327d56b11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="program\Float2.cpp">
@@ -36,11 +39,20 @@
     <ClCompile Include="program\SceneManager.cpp">
       <Filter>program\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="ImageManager.cpp">
+    <ClCompile Include="program\ImageManager.cpp">
       <Filter>program\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="SoundManager.cpp">
+    <ClCompile Include="program\SoundManager.cpp">
       <Filter>program\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="program\Random.cpp">
+      <Filter>program\System</Filter>
+    </ClCompile>
+    <ClCompile Include="program\BallController.cpp">
+      <Filter>program\Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="program\LauncherController.cpp">
+      <Filter>program\Controllers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,11 +77,20 @@
     <ClInclude Include="program\SceneManager.h">
       <Filter>program\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="ImageManager.h">
-      <Filter>program\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="SoundManager.h">
       <Filter>program\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="program\ImageManager.h">
+      <Filter>program\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="program\Random.h">
+      <Filter>program\System</Filter>
+    </ClInclude>
+    <ClInclude Include="program\BallController.h">
+      <Filter>program\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="program\LauncherController.h">
+      <Filter>program\Controllers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

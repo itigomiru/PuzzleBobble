@@ -1,7 +1,10 @@
 #pragma once
 
-#define SCREEN_W	800
-#define SCREEN_H	450
+#define SCREEN_W	960
+#define SCREEN_H	544
+
+#define VS_X 280
+
 
 void SceneManagerInit();	//	‰Šú‰»ˆ—
 void SceneManagerUpdate();	//	XVˆ—
