@@ -3,6 +3,7 @@
 #include "SceneManager.h"
 #include "Math.h"
 #include "Main.h"
+#include "ImageManager.h"
 
 void LauncherController::Update()
 {
@@ -25,6 +26,6 @@ void LauncherController::Update()
 }
 void LauncherController::Render()
 {
-	DrawLine(SCREEN_W * 0.5, 500, (SCREEN_W * 0.5) + cosf(TO_DEGREE(rot)) , 500 - sinf(TO_DEGREE(rot)) , 0x00FFFF);
+	DrawRotaGraph(SCREEN_W * 0.5, 450, 1.0f, TO_RADIAN(rot), ImageManager::GetInstance().GetImage(IMAGE_ALLOW), true);
 	DrawFormatString(100, 100, GetColor(255, 255, 255), "angle: %f", rot);
 }

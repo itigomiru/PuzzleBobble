@@ -1,7 +1,7 @@
 #pragma once
 constexpr int IMAGE_MAX = 50;	//	画像の最大数
 enum IMAGE_LIST {
-	IMAGE_PLAYER,	//	プレイヤーの画像
+	IMAGE_ALLOW,	//	プレイヤーの画像
 };
 class ImageManager
 {

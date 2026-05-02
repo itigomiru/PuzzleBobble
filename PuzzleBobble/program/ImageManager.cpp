@@ -12,7 +12,7 @@ ImageManager::ImageManager()
 	for( int i=0; i<IMAGE_MAX; i++ ){
 		images[i] = -1;
 	}
-	images[0] = LoadGraph("data/image/player.png");	
+	images[0] = LoadGraph("data/allow.png");	
 
 }
 

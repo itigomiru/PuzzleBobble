@@ -1,6 +1,6 @@
 #pragma once
-constexpr float ROT_MAX = 60;
-constexpr float ROT_MIN = -60;
+constexpr float ROT_MAX = 360;
+constexpr float ROT_MIN = 180;
 class LauncherController
 {
 public:
@@ -16,4 +16,6 @@ private:
 public:
 	void Update();
 	void Render();
+	
+	float GetRot() const { return this->rot; }
 };

@@ -1,4 +1,5 @@
 #pragma once
+constexpr float BASE_SPEED = 10;
 enum COL
 {
 	RED,
@@ -10,15 +11,15 @@ enum COL
 class BallController
 {
 private:
-	int x = 0;
-	int y = 0;
-	int speed = 0;
+	float x = 0;
+	float y = 0;
+	float speed = 0;
+	float rot = 0;
 	short col = 0;
 
 public:
 	BallController();
 	~BallController();
-	void Init();
 	void Update();
 	void Render();
 	void Exit();

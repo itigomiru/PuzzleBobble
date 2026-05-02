@@ -4,6 +4,9 @@
 #define SCREEN_H	544
 
 #define VS_X 280
+#define VS_Y 100
+#define VS_W 400
+#define	VS_H 300
 
 
 void SceneManagerInit();	//	‰Šú‰»ˆ—
