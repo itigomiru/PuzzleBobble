@@ -54,6 +54,9 @@
     <ClCompile Include="program\LauncherController.cpp">
       <Filter>program\Controllers</Filter>
     </ClCompile>
+    <ClCompile Include="program\GlidManager.cpp">
+      <Filter>program\Managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program\Float2.h">
@@ -91,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="program\LauncherController.h">
       <Filter>program\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="program\GlidManager.h">
+      <Filter>program\Managers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

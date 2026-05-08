@@ -1,4 +1,5 @@
 #include "LauncherController.h"
+#include "BallController.h"
 #include "DxLib.h"
 #include "SceneManager.h"
 #include "Math.h"
@@ -7,25 +8,38 @@
 
 void LauncherController::Update()
 {
-	if (CheckHitKey(KEY_INPUT_LEFT))
-	{
-		rot -= 3;
-	}
-	if (CheckHitKey(KEY_INPUT_RIGHT))
-	{
-		rot += 3;
-	}
-	if (rot > ROT_MAX)
-	{
-		rot = ROT_MAX;
-	}
-	if (rot < ROT_MIN)
-	{
-		rot = ROT_MIN;
-	}
+    if (CheckHitKey(KEY_INPUT_LEFT))
+    {
+        rot -= 3;
+    }
+    if (CheckHitKey(KEY_INPUT_RIGHT))
+    {
+        rot += 3;
+    }
+    if (rot > ROT_MAX)
+    {
+        rot = ROT_MAX;
+    }
+    if (rot < ROT_MIN)
+    {
+        rot = ROT_MIN;
+    }
+    if (PushHitKey(KEY_INPUT_SPACE))
+    {
+        if (ball == nullptr) {
+            ball = new BallController();
+        }
+    }
+    if (ball) {
+        ball->Update();
+    }
 }
+
 void LauncherController::Render()
 {
-	DrawRotaGraph(SCREEN_W * 0.5, 450, 1.0f, TO_RADIAN(rot), ImageManager::GetInstance().GetImage(IMAGE_ALLOW), true);
-	DrawFormatString(100, 100, GetColor(255, 255, 255), "angle: %f", rot);
+    DrawRotaGraph(SCREEN_W * 0.5, 450, 1.0f, TO_RADIAN(rot), ImageManager::GetInstance().GetImage(IMAGE_ALLOW), true);
+    DrawFormatString(100, 100, GetColor(255, 255, 255), "angle: %f", rot);
+    if (ball) {
+        ball->Render();
+    }
 }

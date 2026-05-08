@@ -1,6 +1,7 @@
 #pragma once
-constexpr float ROT_MAX = 360;
-constexpr float ROT_MIN = 180;
+#include "BallController.h"
+constexpr float ROT_MAX = 350;
+constexpr float ROT_MIN = 190;
 class LauncherController
 {
 public:
@@ -12,7 +13,7 @@ public:
 
 private:
 	float rot = 270;
-
+	BallController* ball = nullptr;
 public:
 	void Update();
 	void Render();
