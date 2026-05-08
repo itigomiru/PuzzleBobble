@@ -5,8 +5,8 @@
 void GlidManager::AddGlid(BallController* ball, int row, int col)
 {
     if (row >= 0 && row < ROWS && col >= 0 && col < COLS) {
-        grid[row][col].exists = true;
-        grid[row][col].color = ball->GetColor(); 
+        glid[row][col].isEmpty = false;
+        glid[row][col].color = ball->GetBallColor(); 
     }
 }
 // グリッド1マスの中心座標を計算する関数

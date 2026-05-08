@@ -26,5 +26,6 @@ public:
     void Render();
     void AddGlid(BallController* ball, int row, int col);
 
+    
     bool CheckCircleCollision(float ballX, float ballY, float ballR);
 };

@@ -50,7 +50,3 @@ void BallController::Update()
 	y += sinf(TO_RADIAN(rot)) * speed;
 	BallBounce(VS_X, VS_X + VS_W);
 }
-int BallController::GetColor() const
-{
-	return col;
-}

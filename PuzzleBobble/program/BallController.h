@@ -25,5 +25,5 @@ public:
 	~BallController();
 	void Update();
 	void Render();
-	int GetColor() const { return col; }
+	int GetBallColor() const { return col; }
 };
