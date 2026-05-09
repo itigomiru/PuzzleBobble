@@ -13,7 +13,6 @@ public:
 
 private:
 	float rot = 270;
-	BallController* ball = nullptr;
 public:
 	void Update();
 	void Render();

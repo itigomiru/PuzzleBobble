@@ -1,9 +1,11 @@
 #pragma once
 #include "BallController.h"
 #include "SceneManager.h"
+#include "Float2.h"
 enum states
 {
-	EMPTY,
+	INVALID = -1,
+	EMPTY = 0,
 	RED,
 	GREEN,
 	BLUE,
@@ -12,6 +14,7 @@ enum states
 struct GlidCell
 {
 	int state = 0;
+	Float2 pos = { 0, 0 };
 };
 
 
@@ -22,26 +25,27 @@ private:
 	static constexpr int COLS = 8;
 	GlidCell glid[ROWS][COLS];
 
-	GlidCell StageData[3][ROWS][COLS]
+	int StageData[3][ROWS][COLS]
 		= {
 	#include "StageData.inc"
 	};
 
-	float offset_y = VS_Y;
+	float top = VS_Y;
 
 	GlidManager();
-	~GlidManager();
 	GlidManager(const GlidManager&) = delete;
 	GlidManager& operator=(const GlidManager&) = delete;
 
-
-	void GetCellCenter(int row, int col, float& cx, float& cy);
 public:
 	static GlidManager& GetInstance();
 
 	void Render();
-	void AddGlid(BallController* ball, int row, int col);
+	void AddGlid(short state, int row, int col);
 	void SetGlid(int StageNum);
 
+	void GetClosestGlid(Float2 pos, int& outRow, int& outCol);
+
 	bool CheckCircleCollision(float ballX, float ballY, float ballR);
+	
+	void CheckAndRemoveGlid();
 };

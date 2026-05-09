@@ -2,6 +2,7 @@
 #include "Random.h"
 #include "dxlib.h"
 #include "LauncherController.h"
+#include "GlidManager.h"
 #include "Main.h"
 #include "SceneManager.h"
 #include <Math.h>
@@ -34,10 +35,6 @@ BallController::BallController()
 	rot = LauncherController::GetInstance().GetRot();
 }
 
-BallController::~BallController()
-{
-
-}
 
 void BallController::Render()
 {
@@ -48,4 +45,12 @@ void BallController::Update()
 	x += cosf(TO_RADIAN(rot)) * speed;
 	y += sinf(TO_RADIAN(rot)) * speed;
 	BallBounce(VS_X, VS_X + VS_W);
+    if (GlidManager::GetInstance().CheckCircleCollision(x, y, radius) == true)
+    {
+		int row, col;
+		GlidManager::GetInstance().GetClosestGlid({ x, y }, row, col);
+	    GlidManager::GetInstance().AddGlid(this->state, row, col);
+		this->state = EMPTY;
+		GlidManager::GetInstance().CheckAndRemoveGlid();
+    }
 }

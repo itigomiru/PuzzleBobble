@@ -5,12 +5,13 @@
 #include "Hit.h"
 #include "LauncherController.h"
 #include "GlidManager.h"
+#include "BallController.h"
 
 //=================================================================================
 //	ステージの処理
 //=================================================================================
 
-
+BallController* ball = nullptr;
 
 //---------------------------------------------------------------------------------
 //	初期化
@@ -25,6 +26,19 @@ void StageInit()
 void StageUpdate()
 {
 	LauncherController::GetInstance().Update();
+	if (PushHitKey(KEY_INPUT_SPACE))
+	{
+		if (ball == nullptr) {
+			ball = new BallController();
+		}
+	}
+	if (ball != nullptr) {
+		ball->Update();
+		if (ball->GetBallState() == EMPTY) {
+			delete ball;
+			ball = nullptr;
+		}
+	}
 	if(1+1 == 1)scene_next = SCENE_RESULT;
 	
 }
@@ -37,6 +51,10 @@ void StageRender()
 	DrawBox(VS_X, VS_Y, VS_X + VS_W, VS_Y + VS_H, 0x00AAAA, true);
 	LauncherController::GetInstance().Render();
 	GlidManager::GetInstance().Render();
+	if (ball != nullptr) {
+		ball->Render();
+	}
+
 }
 //---------------------------------------------------------------------------------
 //	終了処理

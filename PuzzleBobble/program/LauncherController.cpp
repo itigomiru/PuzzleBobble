@@ -24,22 +24,11 @@ void LauncherController::Update()
     {
         rot = ROT_MIN;
     }
-    if (PushHitKey(KEY_INPUT_SPACE))
-    {
-        if (ball == nullptr) {
-            ball = new BallController();
-        }
-    }
-    if (ball) {
-        ball->Update();
-    }
+
 }
 
 void LauncherController::Render()
 {
     DrawRotaGraph(SCREEN_W * 0.5, 450, 1.0f, TO_RADIAN(rot), ImageManager::GetInstance().GetImage(IMAGE_ALLOW), true);
     DrawFormatString(100, 100, GetColor(255, 255, 255), "angle: %f", rot);
-    if (ball) {
-        ball->Render();
-    }
 }
