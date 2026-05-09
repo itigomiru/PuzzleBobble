@@ -45,12 +45,13 @@ void BallController::Update()
 	x += cosf(TO_RADIAN(rot)) * speed;
 	y += sinf(TO_RADIAN(rot)) * speed;
 	BallBounce(VS_X, VS_X + VS_W);
-    if (GlidManager::GetInstance().CheckCircleCollision(x, y, radius) == true)
+    if (GlidManager::GetInstance().CheckCircleCollision(x, y, radius) == true || GlidManager::GetInstance().top > y - radius)
     {
 		int row, col;
 		GlidManager::GetInstance().GetClosestGlid({ x, y }, row, col);
 	    GlidManager::GetInstance().AddGlid(this->state, row, col);
+		GlidManager::GetInstance().CheckMatchAndRemoveGlid(row,col,state);
+		GlidManager::GetInstance().CheckConnectAndRemoveGlid();
 		this->state = EMPTY;
-		GlidManager::GetInstance().CheckAndRemoveGlid();
     }
 }

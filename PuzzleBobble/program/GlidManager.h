@@ -20,6 +20,8 @@ struct GlidCell
 
 class GlidManager
 {
+public:
+	float top = VS_Y;
 private:
 	static constexpr int ROWS = 12;
 	static constexpr int COLS = 8;
@@ -30,8 +32,7 @@ private:
 	#include "StageData.inc"
 	};
 
-	float top = VS_Y;
-
+private:
 	GlidManager();
 	GlidManager(const GlidManager&) = delete;
 	GlidManager& operator=(const GlidManager&) = delete;
@@ -47,5 +48,8 @@ public:
 
 	bool CheckCircleCollision(float ballX, float ballY, float ballR);
 	
-	void CheckAndRemoveGlid();
+	void CheckMatchAndRemoveGlid(int NewR,int NewC,int state);
+	void CheckConnectAndRemoveGlid();
+
+	void DecideNextBallState(int& outState);
 };
