@@ -181,6 +181,9 @@
     <ClInclude Include="program\Title.h" />
     <ClInclude Include="SoundManager.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="program\StageData.inc" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

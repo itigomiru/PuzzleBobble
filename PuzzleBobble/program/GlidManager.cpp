@@ -1,8 +1,24 @@
 #include "GlidManager.h"
 #include "Hit.h"
 #include "DxLib.h"
+#include "SceneManager.h"
+GlidManager& GlidManager::GetInstance()
+{
+    static GlidManager instance;
+    return instance;
+}
 
-
+GlidManager::GlidManager()
+{
+    for (int row = 0; row < ROWS; ++row) {
+        for (int col = 0; col < COLS; ++col) {
+            glid[row][col].state = EMPTY;
+        }
+    }
+}
+GlidManager::~GlidManager()
+{
+}
 
 void GlidManager::AddGlid(BallController* ball, int row, int col)
 {
@@ -42,7 +58,10 @@ void GlidManager::Render()
 {
     const float cellW = 50.0f; 
     const float cellH = 50.0f; 
+	float offset_x = VS_X;
     for (int row = 0; row < ROWS; ++row) {
+        if(row % 2 == 1)  offset_x = VS_X + 25.0f;   //奇数は描画ずらす
+		else offset_x = VS_X;
         for (int col = 0; col < COLS; ++col) {
             if (glid[row][col].state != EMPTY) {
                 int color = glid[row][col].state;
@@ -55,7 +74,7 @@ void GlidManager::Render()
                 }
                 float cx, cy;
                 GetCellCenter(row, col, cx, cy);
-                DrawCircle(cx, cy, cellW / 2.0f - 5.0f, dxColor, true);
+                DrawCircle(cx + offset_x, cy + offset_y, 25.0f, dxColor, true);
             }
         }
     }
@@ -65,7 +84,7 @@ void GlidManager::SetGlid(int StageNum)
 {
     for(int row = 0; row < GlidManager::ROWS; ++row) {
         for(int col = 0; col < GlidManager::COLS; ++col) {
-			// ステージに応じてグリッドを埋めていく
+			glid[row][col].state = StageData[StageNum][row][col].state;
         }
 	}
     

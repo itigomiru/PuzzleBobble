@@ -4,12 +4,12 @@
 #include "Float2.h"
 #include "Hit.h"
 #include "LauncherController.h"
+#include "GlidManager.h"
 
 //=================================================================================
 //	ステージの処理
 //=================================================================================
 
-LauncherController* LC = &LauncherController::GetInstance();
 
 
 //---------------------------------------------------------------------------------
@@ -17,14 +17,14 @@ LauncherController* LC = &LauncherController::GetInstance();
 //---------------------------------------------------------------------------------
 void StageInit()
 {
-
+	GlidManager::GetInstance().SetGlid(0);
 }
 //---------------------------------------------------------------------------------
 //	更新処理
 //---------------------------------------------------------------------------------
 void StageUpdate()
 {
-	LC->Update();
+	LauncherController::GetInstance().Update();
 	if(1+1 == 1)scene_next = SCENE_RESULT;
 	
 }
@@ -35,7 +35,8 @@ void StageRender()
 {
 	DrawBox(0, 0, SCREEN_W, SCREEN_H, 0x002222, true);
 	DrawBox(VS_X, VS_Y, VS_X + VS_W, VS_Y + VS_H, 0x00AAAA, true);
-	LC->Render();
+	LauncherController::GetInstance().Render();
+	GlidManager::GetInstance().Render();
 }
 //---------------------------------------------------------------------------------
 //	終了処理
