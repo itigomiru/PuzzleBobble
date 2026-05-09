@@ -1,10 +1,17 @@
 #pragma once
 #include "BallController.h"
 
+enum states
+{
+    EMPTY,
+    RED,
+    GREEN,
+    BLUE,
+    YELLOW
+};
 struct GlidCell
 {
-    bool isEmpty = true;
-    int color = 0;
+    int state = 0;
 };
 
 class GlidManager
@@ -25,7 +32,7 @@ public:
 
     void Render();
     void AddGlid(BallController* ball, int row, int col);
-
+	void SetGlid(int StageNum);
     
     bool CheckCircleCollision(float ballX, float ballY, float ballR);
 };

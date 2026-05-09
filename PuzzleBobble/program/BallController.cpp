@@ -31,7 +31,6 @@ BallController::BallController()
 	x = SCREEN_W * 0.5;
 	y = 450;
 	speed = BASE_SPEED;
-	col = GetRandomI(COL_MAX - 1);
 	rot = LauncherController::GetInstance().GetRot();
 }
 

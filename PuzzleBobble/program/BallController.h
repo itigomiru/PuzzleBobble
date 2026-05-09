@@ -1,13 +1,6 @@
 #pragma once
 constexpr float BASE_SPEED = 10;
-enum COL
-{
-	RED,
-	GREEN,
-	BLUE,
-	YELLOW,
-	COL_MAX
-};
+
 class BallController
 {
 private:
