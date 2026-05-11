@@ -2,7 +2,9 @@
 #include "Hit.h"
 #include "DxLib.h"
 #include "SceneManager.h"
+#include "Random.h"
 #include <vector>
+#include <algorithm>
 
 GlidManager& GlidManager::GetInstance()
 {
@@ -65,6 +67,9 @@ void GlidManager::Render()
 				case GREEN: dxColor = GetColor(0, 255, 0); break;
 				case BLUE: dxColor = GetColor(0, 0, 255); break;
 				case YELLOW: dxColor = GetColor(255, 255, 0); break;
+				case PURPLE: dxColor = GetColor(255, 0, 255); break;
+				case WHITE: dxColor = GetColor(255, 255, 255); break;
+				case BLACK: dxColor = GetColor(0, 0, 0); break;
 				}
 
 				DrawCircle(glid[row][col].pos.x, glid[row][col].pos.y, 25.0f, dxColor, true);
@@ -100,7 +105,7 @@ void GlidManager::GetClosestGlid(Float2 pos, int& outRow, int& outCol)
 	}
 }
 
-void GlidManager::CheckMatchAndRemoveGlid(int NewR,int NewC,int state)
+void GlidManager::CheckMatchAndRemoveGlid(int NewR, int NewC, int state)
 {
 	if (state == EMPTY || state == INVALID) return;
 
@@ -210,3 +215,30 @@ void GlidManager::CheckConnectAndRemoveGlid()
 	}
 }
 
+int GlidManager::DecideNextBallState()
+{
+	//存在している色を格納していくリスト
+	std::vector<int> availableColors;
+	// グリッド内に存在する色を調べる
+	for (int row = 0; row < ROWS; ++row) {
+		for (int col = 0; col < COLS; ++col) {
+			int state = glid[row][col].state;
+			if (state != EMPTY && state != INVALID) {
+				// すでにリストにある色は追加しない
+				// std::find vector,arrayなどで使用可能。あった場合はその位置へのイテレータ(独自のポインタのようなもの)を返し、ない場合は終端の次のイテレータ(もう終わりましたよイテレータ)を返す。
+				if (std::find(availableColors.begin(), availableColors.end(), state) == availableColors.end()) {
+					availableColors.push_back(state);
+				}
+			}
+		}
+	}
+	//emptyになることはないと思うが、一応赤を出しておく。
+	if (availableColors.empty()) {
+		return RED;
+	}
+	else {
+		// 利用可能な色からランダムに選ぶ
+		int randomIndex = GetRandomI(0, availableColors.size() - 1);
+		return availableColors[randomIndex];
+	}
+}

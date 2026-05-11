@@ -60,6 +60,9 @@
     <ClCompile Include="program\GlidManager.cpp">
       <Filter>program\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="program\NextController.cpp">
+      <Filter>program\Controllers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program\Float2.h">
@@ -100,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="program\GlidManager.h">
       <Filter>program\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="program\NextController.h">
+      <Filter>program\Controllers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

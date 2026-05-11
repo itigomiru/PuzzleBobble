@@ -1,0 +1,4 @@
+
+2 black green purple white blue
+3 black green purple white blue red
+4 yellow green orange red blue purple

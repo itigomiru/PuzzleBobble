@@ -9,7 +9,7 @@ private:
 	float speed = 0;
 	float rot = 0;
 	const float radius = 25.0f;
-	short state = 1;
+	int state = 1;
 
 private:
 	void BallBounce(float leftX,float rightX);

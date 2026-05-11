@@ -156,6 +156,7 @@
     <ClCompile Include="program\GlidManager.cpp" />
     <ClCompile Include="program\ImageManager.cpp" />
     <ClCompile Include="program\LauncherController.cpp" />
+    <ClCompile Include="program\NextController.cpp" />
     <ClCompile Include="program\Random.cpp" />
     <ClCompile Include="program\SceneManager.cpp" />
     <ClCompile Include="program\Hit.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="program\GlidManager.h" />
     <ClInclude Include="program\ImageManager.h" />
     <ClInclude Include="program\LauncherController.h" />
+    <ClInclude Include="program\NextController.h" />
     <ClInclude Include="program\Random.h" />
     <ClInclude Include="program\SceneManager.h" />
     <ClInclude Include="program\Hit.h" />

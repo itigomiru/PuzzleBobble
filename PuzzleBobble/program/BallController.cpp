@@ -33,12 +33,24 @@ BallController::BallController()
 	y = 450;
 	speed = BASE_SPEED;
 	rot = LauncherController::GetInstance().GetRot();
+	state = GlidManager::GetInstance().DecideNextBallState();
 }
 
 
 void BallController::Render()
 {
-	DrawCircle(x, y, 25, GetColor(255, 255, 255), true);
+	int color = state;
+	int dxColor = GetColor(255, 255, 255);
+	switch (color) {
+	case RED: dxColor = GetColor(255, 0, 0); break;
+	case GREEN: dxColor = GetColor(0, 255, 0); break;
+	case BLUE: dxColor = GetColor(0, 0, 255); break;
+	case YELLOW: dxColor = GetColor(255, 255, 0); break;
+	case PURPLE: dxColor = GetColor(255, 0, 255); break;
+	case WHITE: dxColor = GetColor(255, 255, 255); break;
+	case BLACK: dxColor = GetColor(0, 0, 0); break;
+	}
+	DrawCircle(x, y, 25, dxColor, true);
 } 
 void BallController::Update()
 {

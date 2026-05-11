@@ -5,11 +5,14 @@
 enum states
 {
 	INVALID = -1,
-	EMPTY = 0,
-	RED,
-	GREEN,
-	BLUE,
-	YELLOW
+	EMPTY	= 0,
+	RED		= 1,
+	GREEN	= 2,
+	BLUE	= 3,
+	YELLOW	= 4,
+	PURPLE	= 5,
+	WHITE	= 6,
+	BLACK	= 7,
 };
 struct GlidCell
 {
@@ -31,6 +34,7 @@ private:
 		= {
 	#include "StageData.inc"
 	};
+	
 
 private:
 	GlidManager();
@@ -51,5 +55,5 @@ public:
 	void CheckMatchAndRemoveGlid(int NewR,int NewC,int state);
 	void CheckConnectAndRemoveGlid();
 
-	void DecideNextBallState(int& outState);
+	int DecideNextBallState();
 };
