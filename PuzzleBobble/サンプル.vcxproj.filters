@@ -60,8 +60,11 @@
     <ClCompile Include="program\GlidManager.cpp">
       <Filter>program\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="program\NextController.cpp">
+    <ClCompile Include="program\NextBallController.cpp">
       <Filter>program\Controllers</Filter>
+    </ClCompile>
+    <ClCompile Include="program\NextManager.cpp">
+      <Filter>program\Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -104,8 +107,11 @@
     <ClInclude Include="program\GlidManager.h">
       <Filter>program\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="program\NextController.h">
+    <ClInclude Include="program\NextBallController.h">
       <Filter>program\Controllers</Filter>
+    </ClInclude>
+    <ClInclude Include="program\NextManager.h">
+      <Filter>program\Managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

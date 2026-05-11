@@ -9,9 +9,3 @@ class NextBall {
     void update();
 };
 
-class NextController
-{
-	private:
-		std::deque<Ball> queue; // Ballオブジェクトを並べる
-
-};
