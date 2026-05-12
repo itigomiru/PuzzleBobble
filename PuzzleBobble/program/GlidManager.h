@@ -51,9 +51,10 @@ public:
 	void GetClosestGlid(Float2 pos, int& outRow, int& outCol);
 
 	bool CheckCircleCollision(float ballX, float ballY, float ballR);
-	
+
 	void CheckMatchAndRemoveGlid(int NewR,int NewC,int state);
 	void CheckConnectAndRemoveGlid();
 
 	int DecideNextBallState();
+	bool IsClear(); // クリア判定用メソッド
 };

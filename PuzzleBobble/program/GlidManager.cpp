@@ -14,17 +14,18 @@ GlidManager& GlidManager::GetInstance()
 
 GlidManager::GlidManager()
 {
-	const float cellW = 50.0f;
-	const float cellH = 50.0f;
+	const float cellW = 32.0f; // 16*2
+	const float cellH = 32.0f; 
+	const float rowDistance = 28.0f; // sqrt(32^2 - 16^2) = 27.7 くらいの適切な行間
 
 	for (int row = 0; row < ROWS; ++row) {
 		// 奇数行のオフセットシフトを考慮する
-		float offset_x = (row % 2 == 1) ? (VS_X + 25.0f) : VS_X;
+		float offset_x = (row % 2 == 1) ? (VS_X + 16.0f) : VS_X;
 		for (int col = 0; col < COLS; ++col) {
 			glid[row][col].state = EMPTY;
 			// 座標を一度だけ計算して保持させておく
 			glid[row][col].pos.x = col * cellW + cellW / 2.0f + offset_x;
-			glid[row][col].pos.y = row * 45.0f + cellH / 2.0f + top;
+			glid[row][col].pos.y = row * rowDistance + cellH / 2.0f + top;
 		}
 	}
 }
@@ -40,7 +41,7 @@ void GlidManager::AddGlid(short state, int row, int col)
 
 bool GlidManager::CheckCircleCollision(float ballX, float ballY, float ballR)
 {
-	const float cellR = 25.0f;
+	const float cellR = 16.0f;
 
 	for (int row = 0; row < ROWS; ++row) {
 		for (int col = 0; col < COLS; ++col) {
@@ -72,7 +73,7 @@ void GlidManager::Render()
 				case BLACK: dxColor = GetColor(0, 0, 0); break;
 				}
 
-				DrawCircle(glid[row][col].pos.x, glid[row][col].pos.y, 25.0f, dxColor, true);
+				DrawCircle(glid[row][col].pos.x, glid[row][col].pos.y, 16.0f, dxColor, true);
 			}
 		}
 	}
@@ -241,4 +242,17 @@ int GlidManager::DecideNextBallState()
 		int randomIndex = GetRandomI(0, availableColors.size() - 1);
 		return availableColors[randomIndex];
 	}
+}
+
+bool GlidManager::IsClear()
+{
+	// グリッドの中に有効なボール(色付きボール)が1つでも残っていればクリアしていない
+	for (int row = 0; row < ROWS; ++row) {
+		for (int col = 0; col < COLS; ++col) {
+			if (glid[row][col].state != EMPTY && glid[row][col].state != INVALID) {
+				return false;
+			}
+		}
+	}
+	return true; // 全てEMPTYまたはINVALIDになればクリア
 }

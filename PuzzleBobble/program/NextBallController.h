@@ -8,6 +8,7 @@ public:
     bool isMoving;
 
     void update();
+    void Render();
 
 
 };

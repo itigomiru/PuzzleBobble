@@ -8,13 +8,13 @@ private:
 	float y = 0;
 	float speed = 0;
 	float rot = 0;
-	const float radius = 25.0f;
+	const float radius = 16.0f;
 	int state = 1;
 
 private:
 	void BallBounce(float leftX,float rightX);
 public:
-	BallController();
+	BallController(int initialColor);
 	void Update();
 	void Render();
 	int GetBallState() const { return state; }

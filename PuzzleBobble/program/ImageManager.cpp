@@ -13,7 +13,13 @@ ImageManager::ImageManager()
 		images[i] = -1;
 	}
 	images[0] = LoadGraph("data/allow.png");	
-
+	images[1] = LoadGraph("data/redBall_idle.png");
+	images[2] = LoadGraph("data/greenBall_idle.png");
+	images[3] = LoadGraph("data/blueBall_idle.png");
+	images[4] = LoadGraph("data/yellowBall_idle.png");
+	images[5] = LoadGraph("data/purpleBall_idle.png");
+	images[6] = LoadGraph("data/whiteBall_idle.png");
+	images[7] = LoadGraph("data/blackBall_idle.png");
 }
 
 ImageManager::~ImageManager()

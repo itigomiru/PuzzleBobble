@@ -5,6 +5,7 @@
 #include "GlidManager.h"
 #include "Main.h"
 #include "SceneManager.h"
+#include "ImageManager.h"
 #include <Math.h>
 void BallController::BallBounce(float leftX, float rightX)
 {
@@ -21,19 +22,19 @@ void BallController::BallBounce(float leftX, float rightX)
         reflected = true;
     }
     // äpìxÇ0Å`360ìxÇ…ê≥ãKâª
-    if (reflected) {
-        if (rot < 0) rot += 360.0f;
-        if (rot >= 360.0f) rot -= 360.0f;
-    }
+	if (reflected) {
+		if (rot < 0) rot += 360.0f;
+		if (rot >= 360.0f) rot -= 360.0f;
+	}
 }
-BallController::BallController()
+BallController::BallController(int initialColor)
 {
-	
+
 	x = SCREEN_W * 0.5;
 	y = 450;
 	speed = BASE_SPEED;
 	rot = LauncherController::GetInstance().GetRot();
-	state = GlidManager::GetInstance().DecideNextBallState();
+	state = initialColor;
 }
 
 
@@ -42,15 +43,30 @@ void BallController::Render()
 	int color = state;
 	int dxColor = GetColor(255, 255, 255);
 	switch (color) {
-	case RED: dxColor = GetColor(255, 0, 0); break;
-	case GREEN: dxColor = GetColor(0, 255, 0); break;
-	case BLUE: dxColor = GetColor(0, 0, 255); break;
-	case YELLOW: dxColor = GetColor(255, 255, 0); break;
-	case PURPLE: dxColor = GetColor(255, 0, 255); break;
-	case WHITE: dxColor = GetColor(255, 255, 255); break;
-	case BLACK: dxColor = GetColor(0, 0, 0); break;
+	case RED: dxColor = GetColor(255, 0, 0); 
+	DrawRectRotaGraph(x , y ,0,0,16,32,2.0f,0, ImageManager::GetInstance().GetImage(IMAGE_RED_IDLE), true);
+		break;
+	case GREEN: dxColor = GetColor(0, 255, 0);
+	DrawRectRotaGraph(x , y ,0,0,16,32,2.0f,0, ImageManager::GetInstance().GetImage(IMAGE_GREEN_IDLE), true);
+		break;
+
+	case BLUE: dxColor = GetColor(0, 0, 255); 
+	DrawRectRotaGraph(x , y ,0,0,16,32,2.0f,0, ImageManager::GetInstance().GetImage(IMAGE_BLUE_IDLE), true);
+		break;
+	case YELLOW: dxColor = GetColor(255, 255, 0); 
+	DrawRectRotaGraph(x , y ,0,0,16,32,2.0f,0, ImageManager::GetInstance().GetImage(IMAGE_YELLOW_IDLE), true);
+		break;
+	case PURPLE: dxColor = GetColor(255, 0, 255); 
+	DrawRectRotaGraph(x , y ,0,0,16,32,2.0f,0, ImageManager::GetInstance().GetImage(IMAGE_PURPLE_IDLE), true);
+		break;
+	case WHITE: dxColor = GetColor(255, 255, 255);
+	DrawRectRotaGraph(x , y ,0,0,16,32,2.0f,0, ImageManager::GetInstance().GetImage(IMAGE_WHITE_IDLE), true);
+		break;
+	case BLACK: dxColor = GetColor(0, 0, 0);
+	DrawRectRotaGraph(x , y ,0,0,16,32,2.0f,0, ImageManager::GetInstance().GetImage(IMAGE_BLACK_IDLE), true);
+		break;
 	}
-	DrawCircle(x, y, 25, dxColor, true);
+	//DrawCircle(x, y, 16, dxColor, true);
 } 
 void BallController::Update()
 {
