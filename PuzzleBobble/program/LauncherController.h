@@ -34,7 +34,7 @@ private:
 	bool isPiped = false;
 public:
 	static constexpr int SHOOTPOS_X = VS_X + (VS_W / 2);
-	static constexpr int SHOOTPOS_Y = VS_Y + VS_H - 40;
+	static constexpr int SHOOTPOS_Y = VS_Y + VS_H - 67;
 
 	void Update();
 	void Render();

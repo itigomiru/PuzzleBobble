@@ -127,5 +127,6 @@
     <None Include="program\StageData.inc">
       <Filter>program\inc</Filter>
     </None>
+    <None Include="temp\fix_glidmanager_luminus.ps1" />
   </ItemGroup>
 </Project>

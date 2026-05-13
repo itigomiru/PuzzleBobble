@@ -8,6 +8,7 @@
 #include "BallController.h"
 #include "NextManager.h"
 #include"ImageManager.h"
+#include "EffectManager.h"
 
 //=================================================================================
 //	ステージの処理
@@ -32,6 +33,7 @@ void StageUpdate()
 
 	GlidManager::GetInstance().Update(isBallFlying);
 	LauncherController::GetInstance().Update();
+	EffectManager::GetInstance().Update();
 	NextManager::GetInstance().Update();
 	if (PushHitKey(KEY_INPUT_SPACE))
 	{
@@ -67,10 +69,11 @@ void StageRender()
 {
 
 	DrawRotaGraph(SCREEN_W * 0.5,SCREEN_H * 0.5, 2.0f,0,ImageManager::GetInstance().GetImage(IMAGE_STAGE1), true);
-	DrawRectRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 - 30, 0, 0, 128, 162, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_SHUTTER_STAGE1), true);
+	DrawRectRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 - 30, GlidManager::GetInstance().deadLineRowOffset * 128, 0, 128, 162, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_SHUTTER_STAGE1), true);
 	DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 + 8, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WALL_STAGE1), true);
 	LauncherController::GetInstance().Render();
 	GlidManager::GetInstance().Render();
+	EffectManager::GetInstance().Render();
 	NextManager::GetInstance().Render();
 	if (ball != nullptr) {
 		ball->Render();

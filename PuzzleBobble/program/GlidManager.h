@@ -19,6 +19,8 @@ struct GlidCell
 	int state = 0;
 	Float2 pos = { 0, 0 };
 	int blinkTimer = 0;
+	int luminusTimer = 0;
+	bool wasLuminus = true; 
 };
 
 
@@ -30,6 +32,7 @@ public:
 	bool isWaitingToDrop = false; // 振動後、弾が着弾して下がるのを待つフラグ
 	int deadLineRowOffset = 0; // 天井が下がった回数を保持してデッドラインを引き上げる
 private:
+	const int LUMINUS_INTERVAL = 5 ; 
 	static constexpr int ROWS = 12;
 	static constexpr int COLS = 8;
 	GlidCell glid[ROWS][COLS];

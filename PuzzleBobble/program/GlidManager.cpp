@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include "ImageManager.h"
+#include "EffectManager.h"
 GlidManager& GlidManager::GetInstance()
 {
 	static GlidManager instance;
@@ -37,6 +38,8 @@ void GlidManager::AddGlid(short state, int row, int col)
 {
 	if (row >= 0 && row < ROWS && col >= 0 && col < COLS && glid[row][col].state == EMPTY) {
 		glid[row][col].state = state;
+		glid[row][col].luminusTimer = 0;
+		glid[row][col].wasLuminus = false;
 	}
 }
 
@@ -82,9 +85,18 @@ void GlidManager::Update(bool isBallFlying)
 				if (glid[row][col].blinkTimer >= 300) {
 					glid[row][col].blinkTimer = 0;
 				}
+				if(glid[row][col].wasLuminus == false)
+				{ 
+					glid[row][col].luminusTimer++;
+					if (5 * LUMINUS_INTERVAL <= glid[row][col].luminusTimer)
+					{
+						glid[row][col].wasLuminus = true;
+					}
+				}
 			}
 		}
 	}
+	
 }
 
 void GlidManager::Render()
@@ -100,7 +112,6 @@ void GlidManager::Render()
 		for (int col = 0; col < COLS; ++col) {
 			if (glid[row][col].state != EMPTY && glid[row][col].state != INVALID) {
 				int color = glid[row][col].state;
-				int dxColor = GetColor(255, 255, 255);
 				
 				float x = glid[row][col].pos.x + quakeX;
 				float y = glid[row][col].pos.y + quakeY;
@@ -115,32 +126,33 @@ void GlidManager::Render()
 
 				switch (color) {
 				case RED:
-					dxColor = GetColor(255, 0, 0);
 					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_RED_IDLE), true);
+					if (glid[row][col].wasLuminus == false)	DrawRectRotaGraph(x, y, glid[row][col].luminusTimer / LUMINUS_INTERVAL * 16, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_RED_LUMINUS), true);
+					
 					break;
 				case GREEN:
-					dxColor = GetColor(0, 255, 0);
 					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_GREEN_IDLE), true);
+					if (glid[row][col].wasLuminus == false)	DrawRectRotaGraph(x, y, glid[row][col].luminusTimer / LUMINUS_INTERVAL * 16, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_GREEN_LUMINUS), true);
 					break;
 				case BLUE:
-					dxColor = GetColor(0, 0, 255);
 					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_BLUE_IDLE), true);
+					if (glid[row][col].wasLuminus == false)	DrawRectRotaGraph(x, y, glid[row][col].luminusTimer / LUMINUS_INTERVAL * 16, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_BLUE_LUMINUS), true);
 					break;
 				case YELLOW:
-					dxColor = GetColor(255, 255, 0);
 					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_YELLOW_IDLE), true);
+					if (glid[row][col].wasLuminus == false)	DrawRectRotaGraph(x, y, glid[row][col].luminusTimer / LUMINUS_INTERVAL * 16, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_YELLOW_LUMINUS), true);
 					break;
 				case PURPLE:
-					dxColor = GetColor(255, 0, 255);
 					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_PURPLE_IDLE), true);
+					if (glid[row][col].wasLuminus == false)	DrawRectRotaGraph(x, y, glid[row][col].luminusTimer / LUMINUS_INTERVAL * 16, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_PURPLE_LUMINUS), true);
 					break;
 				case WHITE:
-					dxColor = GetColor(255, 255, 255);
 					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WHITE_IDLE), true);
+					if (glid[row][col].wasLuminus == false)	DrawRectRotaGraph(x, y, glid[row][col].luminusTimer / LUMINUS_INTERVAL * 16, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WHITE_LUMINUS), true);
 					break;
 				case BLACK:
-					dxColor = GetColor(0, 0, 0);
 					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_BLACK_IDLE), true);
+					if (glid[row][col].wasLuminus == false)	DrawRectRotaGraph(x, y, glid[row][col].luminusTimer / LUMINUS_INTERVAL * 16, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_BLACK_LUMINUS), true);
 					break;
 				}
 			}
@@ -246,6 +258,7 @@ void GlidManager::CheckMatchAndRemoveGlid(int NewR, int NewC, int state)
 	if (connected.size() >= 3) {
 		for (const auto& pos : connected) {
 			glid[pos.first][pos.second].state = EMPTY;
+			EffectManager::GetInstance().AddPopEffect(glid[pos.first][pos.second].pos.x, glid[pos.first][pos.second].pos.y, state);
 		}
 	}
 }

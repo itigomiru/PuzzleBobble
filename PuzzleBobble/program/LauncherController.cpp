@@ -43,7 +43,7 @@ void LauncherController::Update()
             isFiring = false;
         }
         if(isPiped == false)animCounter[LAUNCHER_PIPE]++;
-        if (animCounter[LAUNCHER_PIPE] >= 3 * ANIM_INTERVAL[LAUNCHER_PIPE]) {
+        if (animCounter[LAUNCHER_PIPE] >= 3 * ANIM_INTERVAL[LAUNCHER_PIPE]  - 4) {
             animCounter[LAUNCHER_PIPE]= 0;
             isPiped = true;
         }
@@ -57,11 +57,11 @@ void LauncherController::Update()
 void LauncherController::Render()
 {
 	DrawRotaGraph(SCREEN_W * 0.5, 362, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_BAR), true);
-	DrawRectRotaGraph(SCREEN_W * 0.5,393, animCounter[LAUNCHER_BASE]/ANIM_INTERVAL[LAUNCHER_BASE] *64, 0, 64, 64, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_LAUNCHER_BASE), true);
+	DrawRectRotaGraph(SCREEN_W * 0.5,392, animCounter[LAUNCHER_BASE]/ANIM_INTERVAL[LAUNCHER_BASE] *64, 0, 64, 64, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_LAUNCHER_BASE), true);
     DrawRotaGraph(SHOOTPOS_X , SHOOTPOS_Y, 2.0f, TO_RADIAN(rot), ImageManager::GetInstance().GetImage(IMAGE_ALLOW), true);
-    DrawRectRotaGraph(SCREEN_W * 0.5 - 32, 398, animCounter[LEFT_BABBLEN] / ANIM_INTERVAL[LEFT_BABBLEN] * 32, 0, 32, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_LEFT_BABBLEN), true);
+    DrawRectRotaGraph(SCREEN_W * 0.5 - 32, 400, animCounter[LEFT_BABBLEN] / ANIM_INTERVAL[LEFT_BABBLEN] * 32, 0, 32, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_LEFT_BABBLEN), true);
 	DrawRectRotaGraph(SCREEN_W * 0.5, 398, animCounter[LAUNCHER_PIPE] / ANIM_INTERVAL[LAUNCHER_PIPE] * 32, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_LAUNCHER_PIPE), true);
-	DrawRectRotaGraph(SCREEN_W * 0.5 + 60, 398, animCounter[RIGHT_BABBLEN] / ANIM_INTERVAL[RIGHT_BABBLEN] * 32, 0, 32, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_RIGHT_BABBLEN), true);
+	DrawRectRotaGraph(SCREEN_W * 0.5 + 60, 400, animCounter[RIGHT_BABBLEN] / ANIM_INTERVAL[RIGHT_BABBLEN] * 32, 0, 32, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_RIGHT_BABBLEN), true);
     DrawFormatString(100, 100, GetColor(255, 255, 255), "angle: %f", rot);
 }
 

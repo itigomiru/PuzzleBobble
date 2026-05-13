@@ -21,7 +21,7 @@ private:
 		// LauncherController の定数をそのまま参照して一緒にする
 		SLOT0_X = LauncherController::SHOOTPOS_X, SLOT0_Y = LauncherController::SHOOTPOS_Y,
 		// 次のボールは発射台の左下（パズルボブル基準）に置く
-		SLOT1_X = LauncherController::SHOOTPOS_X - 70, SLOT1_Y = LauncherController::SHOOTPOS_Y + 30,
+		SLOT1_X = LauncherController::SHOOTPOS_X - 70, SLOT1_Y = LauncherController::SHOOTPOS_Y + 34,
 	};
 public:
 	void Render();
