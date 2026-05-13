@@ -1,12 +1,12 @@
 #pragma once
 
-#define SCREEN_W	960
-#define SCREEN_H	544
+#define SCREEN_W	640
+#define SCREEN_H	448
 
-#define VS_X 352
-#define VS_Y 50
 #define VS_W 256
 #define	VS_H 400
+#define VS_X ((SCREEN_W - VS_W) / 2) // ‰æ–Ê’†‰›‚É‚È‚é‚æ‚¤‚É©“®ŒvZ (192)
+#define VS_Y 48
 
 
 void SceneManagerInit();	//	‰Šú‰»ˆ—

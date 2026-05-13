@@ -30,8 +30,8 @@ void BallController::BallBounce(float leftX, float rightX)
 BallController::BallController(int initialColor)
 {
 
-	x = SCREEN_W * 0.5;
-	y = 450;
+	x = LauncherController::GetInstance().SHOOTPOS_X;
+	y = LauncherController::GetInstance().SHOOTPOS_Y;
 	speed = BASE_SPEED;
 	rot = LauncherController::GetInstance().GetRot();
 	state = initialColor;
@@ -80,6 +80,7 @@ void BallController::Update()
 	    GlidManager::GetInstance().AddGlid(this->state, row, col);
 		GlidManager::GetInstance().CheckMatchAndRemoveGlid(row,col,state);
 		GlidManager::GetInstance().CheckConnectAndRemoveGlid();
+		GlidManager::GetInstance().NotifyBallLanded(); // ’…’e‚ð“Vˆäˆ—‚É’Ê’m
 		this->state = EMPTY;
     }
 }

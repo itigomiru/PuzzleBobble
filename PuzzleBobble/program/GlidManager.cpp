@@ -5,7 +5,7 @@
 #include "Random.h"
 #include <vector>
 #include <algorithm>
-
+#include "ImageManager.h"
 GlidManager& GlidManager::GetInstance()
 {
 	static GlidManager instance;
@@ -26,6 +26,7 @@ GlidManager::GlidManager()
 			// 座標を一度だけ計算して保持させておく
 			glid[row][col].pos.x = col * cellW + cellW / 2.0f + offset_x;
 			glid[row][col].pos.y = row * rowDistance + cellH / 2.0f + top;
+			glid[row][col].blinkTimer = GetRandomI(0, 300); // ばらばらに瞬きさせるために初期値をランダムに設定
 		}
 	}
 }
@@ -56,24 +57,112 @@ bool GlidManager::CheckCircleCollision(float ballX, float ballY, float ballR)
 	return false;
 }
 
+void GlidManager::Update(bool isBallFlying)
+{
+	// 弾が飛んでいない(存在しない)時のみタイマーを進める
+	if (!isBallFlying) {
+		dropTimer++;
+		
+		// 440フレーム時点に達したら振動開始フラグをONにする
+		if (dropTimer >= 440) {
+			isWaitingToDrop = true; 
+		}
+
+		// 振動が始まってから一定時間（600フレーム＝約10秒の地点）経ったら、撃たなくても強制的に天井を下げる
+		if (dropTimer >= 600) {
+			NotifyBallLanded(); // 既存の「待機状態を解除して天井を1段下げる処理」を呼び出す
+		}
+	}
+
+	for (int row = 0; row < ROWS; ++row) {
+		for (int col = 0; col < COLS; ++col) {
+			if (glid[row][col].state != EMPTY && glid[row][col].state != INVALID) {
+				glid[row][col].blinkTimer++;
+				// 瞬きの周期を設定 (約300フレーム = 約5秒に1回瞬き)
+				if (glid[row][col].blinkTimer >= 300) {
+					glid[row][col].blinkTimer = 0;
+				}
+			}
+		}
+	}
+}
+
 void GlidManager::Render()
 {
+	float quakeX = 0;
+	float quakeY = 0;
+	if (isWaitingToDrop) {
+		quakeX = (GetRandomI(-1, 1)) * 2.0f;
+		quakeY = (GetRandomI(-1, 1)) * 2.0f;
+	}
+
 	for (int row = 0; row < ROWS; ++row) {
 		for (int col = 0; col < COLS; ++col) {
 			if (glid[row][col].state != EMPTY && glid[row][col].state != INVALID) {
 				int color = glid[row][col].state;
 				int dxColor = GetColor(255, 255, 255);
-				switch (color) {
-				case RED: dxColor = GetColor(255, 0, 0); break;
-				case GREEN: dxColor = GetColor(0, 255, 0); break;
-				case BLUE: dxColor = GetColor(0, 0, 255); break;
-				case YELLOW: dxColor = GetColor(255, 255, 0); break;
-				case PURPLE: dxColor = GetColor(255, 0, 255); break;
-				case WHITE: dxColor = GetColor(255, 255, 255); break;
-				case BLACK: dxColor = GetColor(0, 0, 0); break;
+				
+				float x = glid[row][col].pos.x + quakeX;
+				float y = glid[row][col].pos.y + quakeY;
+
+				int srcX = 0;
+				if (glid[row][col].blinkTimer >= 290) {
+					int frame = glid[row][col].blinkTimer - 290;
+					if (frame < 3) srcX = 16 * 1; 
+					else if (frame < 7) srcX = 16 * 2; 
+					else srcX = 16 * 0; 
 				}
 
-				DrawCircle(glid[row][col].pos.x, glid[row][col].pos.y, 16.0f, dxColor, true);
+				switch (color) {
+				case RED:
+					dxColor = GetColor(255, 0, 0);
+					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_RED_IDLE), true);
+					break;
+				case GREEN:
+					dxColor = GetColor(0, 255, 0);
+					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_GREEN_IDLE), true);
+					break;
+				case BLUE:
+					dxColor = GetColor(0, 0, 255);
+					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_BLUE_IDLE), true);
+					break;
+				case YELLOW:
+					dxColor = GetColor(255, 255, 0);
+					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_YELLOW_IDLE), true);
+					break;
+				case PURPLE:
+					dxColor = GetColor(255, 0, 255);
+					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_PURPLE_IDLE), true);
+					break;
+				case WHITE:
+					dxColor = GetColor(255, 255, 255);
+					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WHITE_IDLE), true);
+					break;
+				case BLACK:
+					dxColor = GetColor(0, 0, 0);
+					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_BLACK_IDLE), true);
+					break;
+				}
+			}
+		}
+	}
+}
+
+void GlidManager::NotifyBallLanded()
+{
+	// 通知を受けたら（＝弾が着弾したら）、待機状態を解除して即座に天井を下げる
+	if (isWaitingToDrop) {
+		isWaitingToDrop = false;
+		dropTimer = 0; // タイマーリセット
+		top += 28.0f; // 天井を一段分下げる
+		deadLineRowOffset++; // 天井が一行分下がったので、デッドラインの行も一つ上に上げる
+
+		// 全てのセルの位置を再計算してずらす
+		const float rowDistance = 28.0f; 
+		for (int row = 0; row < ROWS; ++row) {
+			float offset_x = (row % 2 == 1) ? (VS_X + 16.0f) : VS_X;
+			for (int col = 0; col < COLS; ++col) {
+				glid[row][col].pos.y = row * rowDistance + 16.0f + top;
 			}
 		}
 	}
@@ -200,7 +289,7 @@ void GlidManager::CheckConnectAndRemoveGlid()
 			if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
 				if (!visited[nr][nc] && glid[nr][nc].state != EMPTY && glid[nr][nc].state != INVALID) {
 					visited[nr][nc] = true;
-					queue.push_back({ nr, nc });
+				    queue.push_back({ nr, nc });
 				}
 			}
 		}
@@ -255,4 +344,22 @@ bool GlidManager::IsClear()
 		}
 	}
 	return true; // 全てEMPTYまたはINVALIDになればクリア
+}
+
+bool GlidManager::IsGameOver()
+{
+	// 配列の一番下（ROWS - 1）から、天井が下がった回数分だけデッドラインを引き上げる
+	int deadLineRow = ROWS - 1 - deadLineRowOffset;
+
+	// デッドラインが0以下になったら（限界まで下がったら）問答無用でゲームオーバー
+	if (deadLineRow < 0) {
+		return true;
+	}
+
+	for (int col = 0; col < COLS; ++col) {
+		if (glid[deadLineRow][col].state != EMPTY && glid[deadLineRow][col].state != INVALID) {
+			return true;
+		}
+	}
+	return false;
 }

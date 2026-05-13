@@ -66,6 +66,9 @@
     <ClCompile Include="program\NextManager.cpp">
       <Filter>program\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="program\EffectManager.cpp">
+      <Filter>program\Managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program\Float2.h">
@@ -111,6 +114,12 @@
       <Filter>program\Controllers</Filter>
     </ClInclude>
     <ClInclude Include="program\NextManager.h">
+      <Filter>program\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="program\EffectManager.h">
+      <Filter>program\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="program\Effect.h">
       <Filter>program\Managers</Filter>
     </ClInclude>
   </ItemGroup>

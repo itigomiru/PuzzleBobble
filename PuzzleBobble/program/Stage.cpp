@@ -7,6 +7,7 @@
 #include "GlidManager.h"
 #include "BallController.h"
 #include "NextManager.h"
+#include"ImageManager.h"
 
 //=================================================================================
 //	ステージの処理
@@ -27,6 +28,9 @@ void StageInit()
 //---------------------------------------------------------------------------------
 void StageUpdate()
 {
+	bool isBallFlying = (ball != nullptr);
+
+	GlidManager::GetInstance().Update(isBallFlying);
 	LauncherController::GetInstance().Update();
 	NextManager::GetInstance().Update();
 	if (PushHitKey(KEY_INPUT_SPACE))
@@ -35,6 +39,7 @@ void StageUpdate()
 			int nextColor = NextManager::GetInstance().GetNextBallColor();
 			ball = new BallController(nextColor);
 			NextManager::GetInstance().onFire(); // 発射をネクストマネージャーに通知
+			LauncherController::GetInstance().Onfire(); // 発射アニメーション開始
 		}
 	}
 	if (ball != nullptr) {
@@ -49,6 +54,10 @@ void StageUpdate()
 	if (GlidManager::GetInstance().IsClear()) {
 		scene_next = SCENE_RESULT;
 	}
+	// ゲームオーバー判定
+	else if (GlidManager::GetInstance().IsGameOver()) {
+		scene_next = SCENE_TITLE; // ゲームオーバー時はタイトル画面に戻す
+	}
 
 }
 //---------------------------------------------------------------------------------
@@ -56,8 +65,10 @@ void StageUpdate()
 //---------------------------------------------------------------------------------
 void StageRender()
 {
-	DrawBox(0, 0, SCREEN_W, SCREEN_H, 0x002222, true);
-	DrawBox(VS_X, VS_Y, VS_X + VS_W, VS_Y + VS_H, 0x00AAAA, true);
+
+	DrawRotaGraph(SCREEN_W * 0.5,SCREEN_H * 0.5, 2.0f,0,ImageManager::GetInstance().GetImage(IMAGE_STAGE1), true);
+	DrawRectRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 - 30, 0, 0, 128, 162, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_SHUTTER_STAGE1), true);
+	DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 + 8, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WALL_STAGE1), true);
 	LauncherController::GetInstance().Render();
 	GlidManager::GetInstance().Render();
 	NextManager::GetInstance().Render();

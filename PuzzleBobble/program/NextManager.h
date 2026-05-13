@@ -1,5 +1,6 @@
 #pragma once
 #include "NextBallController.h"
+#include "LauncherController.h"
 
 class NextManager
 {
@@ -17,8 +18,10 @@ private:
 
 	enum Slots
 	{
-		SLOT0_X = 220, SLOT0_Y = 480, // 発射台の左下あたりに最初のスロット
-		SLOT1_X = 140, SLOT1_Y = 480, // そのさらに左に2個目のスロット
+		// LauncherController の定数をそのまま参照して一緒にする
+		SLOT0_X = LauncherController::SHOOTPOS_X, SLOT0_Y = LauncherController::SHOOTPOS_Y,
+		// 次のボールは発射台の左下（パズルボブル基準）に置く
+		SLOT1_X = LauncherController::SHOOTPOS_X - 70, SLOT1_Y = LauncherController::SHOOTPOS_Y + 30,
 	};
 public:
 	void Render();

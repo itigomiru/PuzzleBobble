@@ -18,6 +18,7 @@ struct GlidCell
 {
 	int state = 0;
 	Float2 pos = { 0, 0 };
+	int blinkTimer = 0;
 };
 
 
@@ -25,6 +26,9 @@ class GlidManager
 {
 public:
 	float top = VS_Y;
+	int dropTimer = 0; 
+	bool isWaitingToDrop = false; // 振動後、弾が着弾して下がるのを待つフラグ
+	int deadLineRowOffset = 0; // 天井が下がった回数を保持してデッドラインを引き上げる
 private:
 	static constexpr int ROWS = 12;
 	static constexpr int COLS = 8;
@@ -44,6 +48,8 @@ private:
 public:
 	static GlidManager& GetInstance();
 
+	void Update(bool isBallFlying = false);
+	void NotifyBallLanded(); // 弾が着弾したことを通知する用
 	void Render();
 	void AddGlid(short state, int row, int col);
 	void SetGlid(int StageNum);
@@ -57,4 +63,5 @@ public:
 
 	int DecideNextBallState();
 	bool IsClear(); // クリア判定用メソッド
+	bool IsGameOver(); // ゲームオーバー判定用メソッド
 };
