@@ -259,6 +259,7 @@ void GlidManager::CheckMatchAndRemoveGlid(int NewR, int NewC, int state)
 		for (const auto& pos : connected) {
 			glid[pos.first][pos.second].state = EMPTY;
 			EffectManager::GetInstance().AddPopEffect(glid[pos.first][pos.second].pos.x, glid[pos.first][pos.second].pos.y, state);
+			EffectManager::GetInstance().AddDropMonsterEffect(glid[pos.first][pos.second].pos.x, glid[pos.first][pos.second].pos.y, state);
 		}
 	}
 }
@@ -312,7 +313,8 @@ void GlidManager::CheckConnectAndRemoveGlid()
 	for (int row = 0; row < ROWS; ++row) {
 		for (int col = 0; col < COLS; ++col) {
 			if (glid[row][col].state != EMPTY && glid[row][col].state != INVALID && !visited[row][col]) {
-				glid[row][col].state = EMPTY; // “Vˆä‚©‚çØ‚è—£‚³‚ê‚Ä‚¢‚é‚Ì‚ÅÁ‹Ž
+				EffectManager::GetInstance().AddDropBubbleEffect(glid[row][col].pos.x, glid[row][col].pos.y, glid[row][col].state);
+					glid[row][col].state = EMPTY; // “Vˆä‚©‚çØ‚è—£‚³‚ê‚Ä‚¢‚é‚Ì‚ÅÁ‹Ž
 			}
 		}
 	}

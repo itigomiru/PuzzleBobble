@@ -23,15 +23,11 @@ void EffectManager::AddPopEffect(float x, float y, int colorType) {
 }
 
 void EffectManager::AddDropBubbleEffect(float x, float y, int colorType) {
-    // TODO: colorTypeに応じた落ちるバブルの画像IDを指定する
-    int imageId = 0; // 例: IMAGE_BUBBLE_RED 等
-    effects.push_back(std::make_unique<DropEffect>(x, y, imageId));
+    effects.push_back(std::make_unique<DropBubbleEffect>(x, y, colorType));
 }
 
 void EffectManager::AddDropMonsterEffect(float x, float y, int monsterType) {
-    // TODO: monsterTypeに応じたモンスターの画像IDを指定する
-    int imageId = 0; // 例: IMAGE_MONSTER_A 等
-    effects.push_back(std::make_unique<DropEffect>(x, y, imageId));
+    effects.push_back(std::make_unique<DropMonsterEffect>(x, y, monsterType));
 }
 
 void EffectManager::ClearAll() {
