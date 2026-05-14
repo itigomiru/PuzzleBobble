@@ -23,12 +23,23 @@ void StageInit()
 {
 	GlidManager::GetInstance().SetGlid(0);
 	NextManager::GetInstance().Init();
+	stage_state = STAGE_READY;
 }
 //---------------------------------------------------------------------------------
 //	XVˆ—
 //---------------------------------------------------------------------------------
 void StageUpdate()
 {
+	switch (stage_state)
+	{
+		case STAGE_READY:
+			//ready go!‚Ì‰‰o‚ğŒã‚Å’Ç‰Á
+			stage_state = STAGE_PLAYING;
+			break;
+		case STAGE_PLAYING:
+			break;
+
+	}
 	bool isBallFlying = (ball != nullptr);
 
 	GlidManager::GetInstance().Update(isBallFlying);
