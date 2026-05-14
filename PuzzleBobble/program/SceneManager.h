@@ -23,3 +23,4 @@ enum {
 
 //	いろんなファイルで使う変数なので外部参照宣言しています
 extern int scene_next;
+

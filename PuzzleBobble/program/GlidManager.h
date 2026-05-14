@@ -13,6 +13,7 @@ enum states
 	PURPLE	= 5,
 	WHITE	= 6,
 	BLACK	= 7,
+	ORANGE = 8,
 };
 struct GlidCell
 {
@@ -20,7 +21,8 @@ struct GlidCell
 	Float2 pos = { 0, 0 };
 	int blinkTimer = 0;
 	int luminusTimer = 0;
-	bool wasLuminus = true; 
+	bool wasLuminus = true;
+	bool isGameOverGray = false;
 };
 
 
@@ -32,12 +34,17 @@ public:
 	bool isWaitingToDrop = false; // 振動後、弾が着弾して下がるのを待つフラグ
 	int deadLineRowOffset = 0; // 天井が下がった回数を保持してデッドラインを引き上げる
 private:
-	const int LUMINUS_INTERVAL = 5 ; 
+	const int LUMINUS_INTERVAL = 5;
 	static constexpr int ROWS = 12;
 	static constexpr int COLS = 8;
+	static constexpr int GAMEOVER_GRAY_INTERVAL = 3;
 	GlidCell glid[ROWS][COLS];
+	bool isGameOverAnimating = false;
+	int gameOverGrayTimer = 0;
+	int gameOverScanRow = ROWS - 1;
+	int gameOverScanCol = COLS - 1;
 
-	int StageData[3][ROWS][COLS]
+	int StageData[7][ROWS][COLS]
 		= {
 	#include "StageData.inc"
 	};
@@ -51,6 +58,7 @@ private:
 public:
 	static GlidManager& GetInstance();
 
+	void Init();
 	void Update(bool isBallFlying = false);
 	void NotifyBallLanded(); // 弾が着弾したことを通知する用
 	void Render();
@@ -67,4 +75,6 @@ public:
 	int DecideNextBallState();
 	bool IsClear(); // クリア判定用メソッド
 	bool IsGameOver(); // ゲームオーバー判定用メソッド
+	bool IsGameOverAnimationFinished() const;
+	void GameOver();
 };

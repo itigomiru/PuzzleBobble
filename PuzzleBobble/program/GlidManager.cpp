@@ -16,7 +16,7 @@ GlidManager& GlidManager::GetInstance()
 GlidManager::GlidManager()
 {
 	const float cellW = 32.0f; // 16*2
-	const float cellH = 32.0f; 
+	const float cellH = 32.0f;
 	const float rowDistance = 28.0f; // sqrt(32^2 - 16^2) = 27.7 くらいの適切な行間
 
 	for (int row = 0; row < ROWS; ++row) {
@@ -27,12 +27,41 @@ GlidManager::GlidManager()
 			// 座標を一度だけ計算して保持させておく
 			glid[row][col].pos.x = col * cellW + cellW / 2.0f + offset_x;
 			glid[row][col].pos.y = row * rowDistance + cellH / 2.0f + top;
+			glid[row][col].blinkTimer = GetRandomI(0, 300);
+			glid[row][col].isGameOverGray = false;
+		}
+	}
+	isGameOverAnimating = false;
+	gameOverGrayTimer = 0;
+	gameOverScanRow = ROWS - 1;
+	gameOverScanCol = COLS - 1;
+}
+void GlidManager::Init()
+{
+	for (int row = 0; row < ROWS; ++row) {
+		for (int col = 0; col < COLS; ++col) {
+			glid[row][col].state = EMPTY;
 			glid[row][col].blinkTimer = GetRandomI(0, 300); // ばらばらに瞬きさせるために初期値をランダムに設定
+			glid[row][col].luminusTimer = 0;
+			glid[row][col].wasLuminus = true;
+			glid[row][col].isGameOverGray = false;
+		}
+	}
+	top = VS_Y;
+	dropTimer = 0;
+	isWaitingToDrop = false;
+	deadLineRowOffset = 0;
+	isGameOverAnimating = false;
+	gameOverGrayTimer = 0;
+	gameOverScanRow = ROWS - 1;
+	gameOverScanCol = COLS - 1;
+	for (int row = 0; row < ROWS; ++row) {
+		float offset_x = (row % 2 == 1) ? (VS_X + 16.0f) : VS_X;
+		for (int col = 0; col < COLS; ++col) {
+			glid[row][col].pos.y = row * 28.0f + 16.0f + top;
 		}
 	}
 }
-
-
 
 void GlidManager::AddGlid(short state, int row, int col)
 {
@@ -40,6 +69,7 @@ void GlidManager::AddGlid(short state, int row, int col)
 		glid[row][col].state = state;
 		glid[row][col].luminusTimer = 0;
 		glid[row][col].wasLuminus = false;
+		glid[row][col].isGameOverGray = false;
 	}
 }
 
@@ -65,15 +95,42 @@ void GlidManager::Update(bool isBallFlying)
 	// 弾が飛んでいない(存在しない)時のみタイマーを進める
 	if (!isBallFlying) {
 		dropTimer++;
-		
+
 		// 440フレーム時点に達したら振動開始フラグをONにする
 		if (dropTimer >= 440) {
-			isWaitingToDrop = true; 
+			isWaitingToDrop = true;
 		}
 
 		// 振動が始まってから一定時間（600フレーム＝約10秒の地点）経ったら、撃たなくても強制的に天井を下げる
 		if (dropTimer >= 600) {
 			NotifyBallLanded(); // 既存の「待機状態を解除して天井を1段下げる処理」を呼び出す
+		}
+	}
+
+	if (isGameOverAnimating) {
+		gameOverGrayTimer++;
+		if (gameOverGrayTimer >= GAMEOVER_GRAY_INTERVAL) {
+			gameOverGrayTimer = 0;
+			while (gameOverScanRow >= 0) {
+				auto& cell = glid[gameOverScanRow][gameOverScanCol];
+				if (cell.state != EMPTY && cell.state != INVALID) {
+					cell.isGameOverGray = true;
+					gameOverScanCol--;
+					if (gameOverScanCol < 0) {
+						gameOverScanCol = COLS - 1;
+						gameOverScanRow--;
+					}
+					break;
+				}
+				gameOverScanCol--;
+				if (gameOverScanCol < 0) {
+					gameOverScanCol = COLS - 1;
+					gameOverScanRow--;
+				}
+			}
+			if (gameOverScanRow < 0) {
+				isGameOverAnimating = false;
+			}
 		}
 	}
 
@@ -85,8 +142,8 @@ void GlidManager::Update(bool isBallFlying)
 				if (glid[row][col].blinkTimer >= 300) {
 					glid[row][col].blinkTimer = 0;
 				}
-				if(glid[row][col].wasLuminus == false)
-				{ 
+				if (glid[row][col].wasLuminus == false)
+				{
 					glid[row][col].luminusTimer++;
 					if (5 * LUMINUS_INTERVAL <= glid[row][col].luminusTimer)
 					{
@@ -96,70 +153,62 @@ void GlidManager::Update(bool isBallFlying)
 			}
 		}
 	}
-	
+
 }
 
 void GlidManager::Render()
 {
-	float quakeX = 0;
-	float quakeY = 0;
+	float quakeX = 0.0f;
+	float quakeY = 0.0f;
+
 	if (isWaitingToDrop) {
-		quakeX = (GetRandomI(-1, 1)) * 2.0f;
-		quakeY = (GetRandomI(-1, 1)) * 2.0f;
+		quakeX = GetRandomI(-1, 1) * 2.0f;
+		quakeY = GetRandomI(-1, 1) * 2.0f;
 	}
 
 	for (int row = 0; row < ROWS; ++row) {
 		for (int col = 0; col < COLS; ++col) {
-			if (glid[row][col].state != EMPTY && glid[row][col].state != INVALID) {
-				int color = glid[row][col].state;
-				
-				float x = glid[row][col].pos.x + quakeX;
-				float y = glid[row][col].pos.y + quakeY;
 
-				int srcX = 0;
-				if (glid[row][col].blinkTimer >= 290) {
-					int frame = glid[row][col].blinkTimer - 290;
-					if (frame < 3) srcX = 16 * 1; 
-					else if (frame < 7) srcX = 16 * 2; 
-					else srcX = 16 * 0; 
+			auto& cell = glid[row][col];
+
+			if (cell.state == EMPTY || cell.state == INVALID) {
+				continue;
+			}
+
+			float x = cell.pos.x + quakeX;
+			float y = cell.pos.y + quakeY;
+
+			// 点滅アニメ
+			int srcX = 0;
+
+			if (cell.blinkTimer >= 290) {
+
+				int frame = cell.blinkTimer - 290;
+
+				if (frame < 3) {
+					srcX = 16;
 				}
+				else if (frame < 7) {
+					srcX = 32;
+				}
+			}
 
-				switch (color) {
-				case RED:
-					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_RED_IDLE), true);
-					if (glid[row][col].wasLuminus == false)	DrawRectRotaGraph(x, y, glid[row][col].luminusTimer / LUMINUS_INTERVAL * 16, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_RED_LUMINUS), true);
-					
-					break;
-				case GREEN:
-					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_GREEN_IDLE), true);
-					if (glid[row][col].wasLuminus == false)	DrawRectRotaGraph(x, y, glid[row][col].luminusTimer / LUMINUS_INTERVAL * 16, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_GREEN_LUMINUS), true);
-					break;
-				case BLUE:
-					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_BLUE_IDLE), true);
-					if (glid[row][col].wasLuminus == false)	DrawRectRotaGraph(x, y, glid[row][col].luminusTimer / LUMINUS_INTERVAL * 16, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_BLUE_LUMINUS), true);
-					break;
-				case YELLOW:
-					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_YELLOW_IDLE), true);
-					if (glid[row][col].wasLuminus == false)	DrawRectRotaGraph(x, y, glid[row][col].luminusTimer / LUMINUS_INTERVAL * 16, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_YELLOW_LUMINUS), true);
-					break;
-				case PURPLE:
-					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_PURPLE_IDLE), true);
-					if (glid[row][col].wasLuminus == false)	DrawRectRotaGraph(x, y, glid[row][col].luminusTimer / LUMINUS_INTERVAL * 16, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_PURPLE_LUMINUS), true);
-					break;
-				case WHITE:
-					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WHITE_IDLE), true);
-					if (glid[row][col].wasLuminus == false)	DrawRectRotaGraph(x, y, glid[row][col].luminusTimer / LUMINUS_INTERVAL * 16, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WHITE_LUMINUS), true);
-					break;
-				case BLACK:
-					DrawRectRotaGraph(x, y, srcX, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_BLACK_IDLE), true);
-					if (glid[row][col].wasLuminus == false)	DrawRectRotaGraph(x, y, glid[row][col].luminusTimer / LUMINUS_INTERVAL * 16, 0, 16, 32, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_BLACK_LUMINUS), true);
-					break;
+			// 本体描画
+			if (cell.isGameOverGray) {
+				int graySrcX = (cell.state - 1) * 16;
+				DrawRectRotaGraph(x, y, graySrcX, 0, 16, 16, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_BUBBLE_GRAY), true);
+			}
+			else {
+				DrawRectRotaGraph(x,y,srcX,0,16,32,2.0f,0,ImageManager::GetInstance().GetImage(ImageManager::GetInstance().GetBubbleImage(cell.state)),true);
+
+			// 発光
+				if (!cell.wasLuminus) {
+					DrawRectRotaGraph(x,y,(cell.luminusTimer / LUMINUS_INTERVAL) * 16,0,16,32,2.0f,0,ImageManager::GetInstance().GetImage(ImageManager::GetInstance().GetLuminusImage(cell.state)),true);
 				}
 			}
 		}
 	}
 }
-
 void GlidManager::NotifyBallLanded()
 {
 	// 通知を受けたら（＝弾が着弾したら）、待機状態を解除して即座に天井を下げる
@@ -170,7 +219,7 @@ void GlidManager::NotifyBallLanded()
 		deadLineRowOffset++; // 天井が一行分下がったので、デッドラインの行も一つ上に上げる
 
 		// 全てのセルの位置を再計算してずらす
-		const float rowDistance = 28.0f; 
+		const float rowDistance = 28.0f;
 		for (int row = 0; row < ROWS; ++row) {
 			float offset_x = (row % 2 == 1) ? (VS_X + 16.0f) : VS_X;
 			for (int col = 0; col < COLS; ++col) {
@@ -182,11 +231,17 @@ void GlidManager::NotifyBallLanded()
 
 void GlidManager::SetGlid(int StageNum)
 {
+	deadLineRowOffset = 0;
 	for (int row = 0; row < GlidManager::ROWS; ++row) {
 		for (int col = 0; col < GlidManager::COLS; ++col) {
 			glid[row][col].state = StageData[StageNum][row][col];
+			glid[row][col].isGameOverGray = false;
 		}
 	}
+	isGameOverAnimating = false;
+	gameOverGrayTimer = 0;
+	gameOverScanRow = ROWS - 1;
+	gameOverScanCol = COLS - 1;
 }
 
 void GlidManager::GetClosestGlid(Float2 pos, int& outRow, int& outCol)
@@ -303,7 +358,7 @@ void GlidManager::CheckConnectAndRemoveGlid()
 			if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
 				if (!visited[nr][nc] && glid[nr][nc].state != EMPTY && glid[nr][nc].state != INVALID) {
 					visited[nr][nc] = true;
-				    queue.push_back({ nr, nc });
+					queue.push_back({ nr, nc });
 				}
 			}
 		}
@@ -314,7 +369,7 @@ void GlidManager::CheckConnectAndRemoveGlid()
 		for (int col = 0; col < COLS; ++col) {
 			if (glid[row][col].state != EMPTY && glid[row][col].state != INVALID && !visited[row][col]) {
 				EffectManager::GetInstance().AddDropBubbleEffect(glid[row][col].pos.x, glid[row][col].pos.y, glid[row][col].state);
-					glid[row][col].state = EMPTY; // 天井から切り離されているので消去
+				glid[row][col].state = EMPTY; // 天井から切り離されているので消去
 			}
 		}
 	}
@@ -377,4 +432,19 @@ bool GlidManager::IsGameOver()
 		}
 	}
 	return false;
+}
+
+bool GlidManager::IsGameOverAnimationFinished() const
+{
+	return !isGameOverAnimating && gameOverScanRow < 0;
+}
+
+void GlidManager::GameOver()
+{
+	if (!isGameOverAnimating) {
+		isGameOverAnimating = true;
+		gameOverGrayTimer = 0;
+		gameOverScanRow = ROWS - 1;
+		gameOverScanCol = COLS - 1;
+	}
 }

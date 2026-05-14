@@ -1,5 +1,6 @@
 #pragma once
-constexpr int IMAGE_MAX = 50;	//	画像の最大数
+#include "GlidManager.h"
+constexpr int IMAGE_MAX = 51;	//	画像の最大数
 enum IMAGE_LIST {
 	IMAGE_STAGE1,	//	ステージの背景
 	IMAGE_WALL_STAGE1,
@@ -26,6 +27,9 @@ enum IMAGE_LIST {
 	IMAGE_BLACK_IDLE,
 	IMAGE_BLACK_LUMINUS,
 	IMAGE_BLACK_POP,
+	IMAGE_ORANGE_IDLE,
+	IMAGE_ORANGE_LUMINUS,
+	IMAGE_ORANGE_POP,
 	IMAGE_MONSTER_RED,
 	IMAGE_MONSTER_GREEN,
 	IMAGE_MONSTER_BLUE,
@@ -33,13 +37,20 @@ enum IMAGE_LIST {
 	IMAGE_MONSTER_PURPLE,
 	IMAGE_MONSTER_WHITE,
 	IMAGE_MONSTER_BLACK,
+	IMAGE_MONSTER_ORANGE,
 	IMAGE_LEFT_BABBLEN,
 	IMAGE_RIGHT_BABBLEN,
 	IMAGE_NEXT,
 	IMAGE_LAUNCHER_BASE,
 	IMAGE_LAUNCHER_PIPE,
 	IMAGE_BAR,
-
+	IMAGE_ROUNDBOARD,
+	IMAGE_NUMBER,
+	IMAGE_TITLE_BG,
+	IMAGE_TITLE_BABBLEN,
+	IMAGE_TITLE_BOBBLEN,
+	IMAGE_ROUND_CLEAR,
+	IMAGE_BUBBLE_GRAY,
 };
 
 
@@ -56,4 +67,8 @@ class ImageManager
 		int images[IMAGE_MAX];	//	画像のハンドルを入れる配列
 public:
 	int GetImage(int num) const { return images[num]; }
+	int GetPopImage(int state);
+	int GetMonsterImage(int state);
+	int GetBubbleImage(int state);
+	int GetLuminusImage(int state);
 };
