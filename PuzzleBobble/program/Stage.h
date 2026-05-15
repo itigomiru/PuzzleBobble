@@ -7,6 +7,10 @@ enum stage_states
 	STAGE_CLEAR,
 	STAGE_GAMEOVER,
 };
+
+int GetStageScore();
+void AddStageScore(int point);
+
 //	ステージで使う関数の宣言
 void StageInit();
 void StageUpdate();

@@ -80,6 +80,8 @@ ImageManager::ImageManager()
 	images[IMAGE_BAR] =				LoadGraph("data/image/bar.png");
 	images[IMAGE_ROUNDBOARD] =		LoadGraph("data/image/roundBoard.png");
 	images[IMAGE_NUMBER] =			LoadGraph("data/image/number.png");
+	images[IMAGE_NUMBER_REVERSE] = LoadGraph("data/image/number_reverse.png");
+	images[IMAGE_SCORE_NUMBER] = LoadGraph("data/image/numberScore.png");
 	images[IMAGE_TITLE_BG] =		LoadGraph("data/image/title_bg.png");
 	images[IMAGE_TITLE_BABBLEN] =	LoadGraph("data/image/title_babblen.png");
 	images[IMAGE_TITLE_BOBBLEN] =	LoadGraph("data/image/title_bobblen.png");
@@ -95,6 +97,8 @@ ImageManager::ImageManager()
 	images[IMAGE_STAR_SHUTTER] = LoadGraph("data/image/star_shutter.png");
 	images[IMAGE_GLASS] = LoadGraph("data/image/star_glass.png");
 	images[IMAGE_GAMEOVER] = LoadGraph("data/image/gameover.png");
+	images[IMAGE_SEC] = LoadGraph("data/image/sec.png");
+	images[IMAGE_PTS] = LoadGraph("data/image/pts.png");
 }
 
 ImageManager::~ImageManager()

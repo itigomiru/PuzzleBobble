@@ -26,9 +26,11 @@ public:
 
     // エフェクトの登録関数
     void AddPopEffect(float x, float y, int colorType);
+    void AddPopScoreEffect(float x, float y, int score);
+    void AddDropScoreEffect(int score);
     void AddDropBubbleEffect(float x, float y, int colorType);
     void AddDropMonsterEffect(float x, float y, int monsterType);
-    
+
     // リセット用
     void ClearAll(); 
 };

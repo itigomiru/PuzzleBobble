@@ -63,6 +63,7 @@ public:
 	void NotifyBallLanded(); // 弾が着弾したことを通知する用
 	void Render();
 	void AddGlid(short state, int row, int col);
+	void AddScore(int point);
 	void SetGlid(int StageNum);
 
 	void GetClosestGlid(Float2 pos, int& outRow, int& outCol);

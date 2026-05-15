@@ -17,8 +17,11 @@ int counter = 0;
 bool isGameOverStarted = false;
 int gameOverDelayTimer = 0;
 bool isGoSoundPlayed = false;
+int stageScore = 0;
+int oneStageScore = 0;
 static constexpr int GAMEOVER_RETRY_DELAY = 60;
 static constexpr int STAR_BG_OFFSET = 1344;
+int stageTimer = 0;
 //=================================================================================
 //	ステージの処理
 //=================================================================================
@@ -47,10 +50,58 @@ void StageInit()
 		starY[0] = 672;
 		starY[1] = -672;
 	}
+	stageTimer = 0;
+	oneStageScore = 0;
 }
 //---------------------------------------------------------------------------------
 //	更新処理
 //---------------------------------------------------------------------------------
+int GetStageScore()
+{
+	return stageScore;
+}
+
+void AddStageScore(int point)
+{
+	stageScore += point;
+}
+
+static void DrawNumberRightAligned(int rightX, int y, int value)
+{
+	if (value < 0) {
+		value = 0;
+	}
+
+	int digits[10];
+	int digitCount = 0;
+	do {
+		digits[digitCount++] = value % 10;
+		value /= 10;
+	} while (value > 0 && digitCount < 10);
+
+	int digitWidth = 16 * 2;
+	int totalWidth = digitCount * digitWidth;
+	int startX = rightX - totalWidth;
+	for (int i = digitCount - 1; i >= 0; --i) {
+		int index = digitCount - 1 - i;
+		int drawX = startX + (index * digitWidth);
+		DrawRectRotaGraph(drawX, y, digits[i] * 16, 0, 16, 16, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_NUMBER), true);
+	}
+}
+
+static int CalculateOneStageScore()
+{
+	int elapsedSeconds = stageTimer / 60;
+	if (elapsedSeconds <= 5) {
+		return 50000;
+	}
+	if (elapsedSeconds >= 60) {
+		return 0;
+	}
+	float t = static_cast<float>(elapsedSeconds - 5) / 55.0f;
+	return static_cast<int>(50000.0f * (1.0f - t));
+}
+
 void StageUpdate()
 {
 		bool isBallFlying = (ball != nullptr);
@@ -68,6 +119,7 @@ void StageUpdate()
 		if(CheckSoundMem(SoundManager::GetInstance().GetSE(SE_READY)) == false)PlaySoundMem(SoundManager::GetInstance().GetSE(SE_READY), DX_PLAYTYPE_BACK);
 		break;
 	case STAGE_PLAYING:
+		stageTimer++;
 	if (CheckMusicMem(SoundManager::GetInstance().GetBGM(BGM_STAGE)) == false)PlayMusicMem(SoundManager::GetInstance().GetBGM(BGM_STAGE), DX_PLAYTYPE_BACK);
 		if (isGoSoundPlayed == false )
 		{
@@ -97,6 +149,18 @@ void StageUpdate()
 		// クリア判定
 		if (GlidManager::GetInstance().IsClear()) {
 			//scene_next = SCENE_RESULT;
+			int elapsedSeconds = stageTimer / 60;
+			if (elapsedSeconds <= 5) {
+				oneStageScore = 50000;
+			}
+			else if (elapsedSeconds >= 60) {
+				oneStageScore = 0;
+			}
+			else {
+				float t = static_cast<float>(elapsedSeconds - 5) / 55.0f;
+				oneStageScore = static_cast<int>(50000.0f * (1.0f - t));
+			}
+			stageScore += oneStageScore;
 			stage_state = STAGE_CLEAR;
 			SoundManager::GetInstance().StopAllBGM();
 		}
@@ -247,18 +311,44 @@ void StageRender()
 	}
 		int srcX_r = 16 * ((stageNum + 1) % 10);
 		int srcX_l = 16 * ((stageNum + 1) / 10);
-	switch (stage_state)
-	{
-	case STAGE_READY:
-		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.35, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_ROUNDBOARD), true);
-		if (srcX_l != 0)DrawRectRotaGraph(SCREEN_W * 0.5 - 16, SCREEN_H * 0.35 + 16, srcX_l, 0, 16, 16, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_NUMBER), true);
-		DrawRectRotaGraph(SCREEN_W * 0.5 + 16, SCREEN_H * 0.35 + 16, srcX_r, 0, 16, 16, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_NUMBER), true);
-		break;
-	case STAGE_CLEAR:
-		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.35, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_ROUND_CLEAR), true);
+		switch (stage_state)
+		{
+		case STAGE_READY:
+			DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.35, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_ROUNDBOARD), true);
+			if (srcX_l != 0)DrawRectRotaGraph(SCREEN_W * 0.5 - 16, SCREEN_H * 0.35 + 16, srcX_l, 0, 16, 16, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_NUMBER), true);
+			DrawRectRotaGraph(SCREEN_W * 0.5 + 16, SCREEN_H * 0.35 + 16, srcX_r, 0, 16, 16, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_NUMBER), true);
+			break;
+		case STAGE_CLEAR:
+			if (counter < 82)DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.35, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_ROUND_CLEAR), true);
+			else
+			{
+				(SCREEN_W * 0.3f);
+				(SCREEN_W * 0.3f);
+				(SCREEN_H * 0.35f);
+				(SCREEN_H * 0.65f);
+				DrawRotaGraph(SCREEN_W * 0.7f, SCREEN_H * 0.35f, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_SEC), true);
+				DrawRotaGraph(SCREEN_W * 0.7f, SCREEN_H * 0.65f, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_PTS), true);
+				DrawNumberRightAligned(SCREEN_W * 0.55f, SCREEN_H * 0.35f, stageTimer / 60);
+				DrawNumberRightAligned(SCREEN_W * 0.55f, SCREEN_H * 0.65f, oneStageScore);
+			}
 		break;
 	}
 
+	int displayScore = stageScore;
+	if (displayScore < 0) {
+		displayScore = 0;
+	}
+	if (displayScore > 99999999) {
+		displayScore = 99999999;
+	}
+	int scoreDigits[8];
+	for (int i = 7; i >= 0; --i) {
+		scoreDigits[i] = displayScore % 10;
+		displayScore /= 10;
+	}
+	for (int i = 0; i < 8; ++i) {
+		DrawRectRotaGraph(72 + (i * 16), 20, scoreDigits[i] * 8, 0, 8, 16, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_SCORE_NUMBER), true);
+	}
 
 }
 //---------------------------------------------------------------------------------

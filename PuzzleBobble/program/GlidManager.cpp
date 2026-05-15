@@ -8,6 +8,7 @@
 #include "ImageManager.h"
 #include "EffectManager.h"
 #include "SoundManager.h"
+#include "Stage.h"
 GlidManager& GlidManager::GetInstance()
 {
 	static GlidManager instance;
@@ -72,6 +73,11 @@ void GlidManager::AddGlid(short state, int row, int col)
 		glid[row][col].wasLuminus = false;
 		glid[row][col].isGameOverGray = false;
 	}
+}
+
+void GlidManager::AddScore(int point)
+{
+	AddStageScore(point);
 }
 
 bool GlidManager::CheckCircleCollision(float ballX, float ballY, float ballR)
@@ -313,6 +319,8 @@ void GlidManager::CheckMatchAndRemoveGlid(int NewR, int NewC, int state)
 	// 3つ以上つながっていたら消す
 	if (connected.size() >= 3) {
 		for (const auto& pos : connected) {
+			AddScore(10);
+			EffectManager::GetInstance().AddPopScoreEffect(glid[pos.first][pos.second].pos.x, glid[pos.first][pos.second].pos.y, 10);
 			glid[pos.first][pos.second].state = EMPTY;
 			EffectManager::GetInstance().AddPopEffect(glid[pos.first][pos.second].pos.x, glid[pos.first][pos.second].pos.y, state);
 			EffectManager::GetInstance().AddDropMonsterEffect(glid[pos.first][pos.second].pos.x, glid[pos.first][pos.second].pos.y, state);
@@ -324,40 +332,30 @@ void GlidManager::CheckMatchAndRemoveGlid(int NewR, int NewC, int state)
 
 void GlidManager::CheckConnectAndRemoveGlid()
 {
-	// 天井からつながっているかどうか
 	bool visited[ROWS][COLS] = { false };
-
-	// even(偶数)の探索方向、odd(奇数)の探索方向を分けてつくっておく
 	int evenOffsets[6][2] = { {-1, -1}, {-1, 0}, {0, -1}, {0, 1}, {1, -1}, {1, 0} };
 	int oddOffsets[6][2] = { {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, 0}, {1, 1} };
-
-	// 探索するための待ち列
 	std::vector<std::pair<int, int>> queue;
 
-	// 1. 一番上の列（天井）にあるグリッドをすべてキューに入れ、探索開始地点にする
 	for (int c = 0; c < COLS; ++c) {
 		if (glid[0][c].state != EMPTY && glid[0][c].state != INVALID) {
 			queue.push_back({ 0, c });
-			visited[0][c] = true; // 天井とつながっている
+			visited[0][c] = true;
 		}
 	}
 
-	// 2. 待ち列がなくなるまで探索を続ける（天井からつながっているグリッドを全て洗い出す）
 	int head = 0;
 	while (head < queue.size()) {
 		int cr = queue[head].first;
 		int cc = queue[head].second;
 		head++;
 
-		// 奇数なら奇数の探索方向、偶数なら偶数の探索方向を使う
 		auto offsets = (cr % 2 == 0) ? evenOffsets : oddOffsets;
 
 		for (int i = 0; i < 6; ++i) {
-			// cr,cc(探索してるセル)にoffset(探索方向)を足して、nr,nc(次に探索するセル)を計算する
 			int nr = cr + offsets[i][0];
 			int nc = cc + offsets[i][1];
 
-			// グリッド範囲内で、まだ探索していなくて、空じゃないセルを見つけたら次に探索するために追加する
 			if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS) {
 				if (!visited[nr][nc] && glid[nr][nc].state != EMPTY && glid[nr][nc].state != INVALID) {
 					visited[nr][nc] = true;
@@ -367,15 +365,21 @@ void GlidManager::CheckConnectAndRemoveGlid()
 		}
 	}
 
-	// 3. 全てのつながりを調べた後、天井からつながっていなかったグリッドをすべて消す
+	int droppedCount = 0;
 	for (int row = 0; row < ROWS; ++row) {
 		for (int col = 0; col < COLS; ++col) {
 			if (glid[row][col].state != EMPTY && glid[row][col].state != INVALID && !visited[row][col]) {
 				EffectManager::GetInstance().AddDropBubbleEffect(glid[row][col].pos.x, glid[row][col].pos.y, glid[row][col].state);
-				glid[row][col].state = EMPTY; // 天井から切り離されているので消去
+				glid[row][col].state = EMPTY;
 				PlaySoundMem(SoundManager::GetInstance().GetSE(SE_POPCOMBO), DX_PLAYTYPE_BACK);
+				droppedCount++;
 			}
 		}
+	}
+	if (droppedCount > 0) {
+		int score = (droppedCount >= 17) ? 1310720 : 20 * (1 << (droppedCount - 1));
+		AddScore(score);
+		EffectManager::GetInstance().AddDropScoreEffect(score);
 	}
 }
 

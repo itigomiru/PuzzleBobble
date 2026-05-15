@@ -22,6 +22,14 @@ void EffectManager::AddPopEffect(float x, float y, int colorType) {
     effects.push_back(std::make_unique<PopEffect>(x, y, colorType));
 }
 
+void EffectManager::AddPopScoreEffect(float x, float y, int score) {
+    effects.push_back(std::make_unique<PopScoreEffect>(x, y, score));
+}
+
+void EffectManager::AddDropScoreEffect(int score) {
+    effects.push_back(std::make_unique<DropScoreEffect>(score));
+}
+
 void EffectManager::AddDropBubbleEffect(float x, float y, int colorType) {
     effects.push_back(std::make_unique<DropBubbleEffect>(x, y, colorType));
 }
