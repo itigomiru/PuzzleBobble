@@ -3,6 +3,7 @@
 #include "Title.h"
 #include "Float2.h"
 #include"ImageManager.h"
+#include "SoundManager.h"
 //=================================================================================
 //	タイトル画面の処理
 //=================================================================================
@@ -14,6 +15,7 @@ const int ANIMINTERVAL = 10;
 void TitleInit()
 {
 	animFrame = 0;
+	PlayMusicMem(SoundManager::GetInstance().GetBGM(BGM_TITLE), DX_PLAYTYPE_BACK);
 }
 //---------------------------------------------------------------------------------
 //	更新処理

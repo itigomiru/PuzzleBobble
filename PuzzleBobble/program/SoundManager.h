@@ -1,44 +1,43 @@
 #pragma once
 constexpr int BGM_MAX = 10;	//	音声の最大数
-//--------------------------------------------------
-enum BGM_LIST {
-	BGM_PLAYER,	//	プレイヤーの音声
-};
-//--------------------------------------------------
-class BGMManager
-{
-public:
-	static BGMManager& GetInstance();
-private:
-	BGMManager();
-	~BGMManager();
-
-	BGMManager(const BGMManager&) = delete;
-	BGMManager& operator=(const BGMManager&) = delete;
-
-	int BGMs[BGM_MAX];	//	音声のハンドルを入れる配列
-public:
-	int GetBGM(int num) const { return BGMs[num]; }
-};
-//========================================================
 constexpr int SE_MAX = 10;	//	効果音の最大数
 //--------------------------------------------------
-enum SE_LIST {
-	SE_JUMP,	//	ジャンプの効果音
+enum BGM_LIST {
+	BGM_TITLE,	
+	BGM_STAGE,
+	BGM_CLEAR,
+	BGM_ENDING,
+	BGM_GAMEOVER,
 };
 //--------------------------------------------------
-class SEManager
+enum SE_LIST {
+	SE_READY,
+	SE_GO,
+	SE_TAP,
+	SE_POP,
+	SE_POPCOMBO,
+	SE_TAPPOP,
+	SE_TOP,
+	SE_MISS,
+	
+};
+//--------------------------------------------------
+class SoundManager
 {
 public:
-	static SEManager& GetInstance();
+	static SoundManager& GetInstance();
 private:
-	SEManager();
-	~SEManager();
+	SoundManager();
+	~SoundManager();
 
-	SEManager(const SEManager&) = delete;
-	SEManager& operator=(const SEManager&) = delete;
+	SoundManager(const SoundManager&) = delete;
+	SoundManager& operator=(const SoundManager&) = delete;
+	
+	int BGMs[BGM_MAX];	//	音声のハンドルを入れる配列
 
 	int SEs[SE_MAX];	//	効果音のハンドルを入れる配列
 public:
 	int GetSE(int num) const { return SEs[num]; }
+	int GetBGM(int num) const { return BGMs[num]; }
+	void StopAllBGM() ;
 };

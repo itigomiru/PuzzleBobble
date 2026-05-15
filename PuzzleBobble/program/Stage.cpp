@@ -9,19 +9,22 @@
 #include "NextManager.h"
 #include"ImageManager.h"
 #include "EffectManager.h"
+#include "SoundManager.h"
 
 int stage_state;
-int stageNum = 4;
+int stageNum = 0;
 int counter = 0;
 bool isGameOverStarted = false;
 int gameOverDelayTimer = 0;
+bool isGoSoundPlayed = false;
 static constexpr int GAMEOVER_RETRY_DELAY = 60;
+static constexpr int STAR_BG_OFFSET = 1344;
 //=================================================================================
 //	ステージの処理
 //=================================================================================
 
 BallController* ball = nullptr;
-
+int starY[2] = { 672, -672};
 //---------------------------------------------------------------------------------
 //	初期化
 //---------------------------------------------------------------------------------
@@ -31,6 +34,7 @@ void StageInit()
 		delete ball;
 		ball = nullptr;
 	}
+	SoundManager::GetInstance().StopAllBGM();
 	GlidManager::GetInstance().Init();
 	GlidManager::GetInstance().SetGlid(stageNum);
 	NextManager::GetInstance().Init();
@@ -38,6 +42,11 @@ void StageInit()
 	isGameOverStarted = false;
 	gameOverDelayTimer = 0;
 	stage_state = STAGE_READY;
+	isGoSoundPlayed = false;
+	if (24 < stageNum && stageNum < 27) {
+		starY[0] = 672;
+		starY[1] = -672;
+	}
 }
 //---------------------------------------------------------------------------------
 //	更新処理
@@ -49,15 +58,22 @@ void StageUpdate()
 	{
 	case STAGE_READY:
 		//ready go!の演出を後で追加
+	if (CheckMusicMem(SoundManager::GetInstance().GetBGM(BGM_STAGE)) == false)PlayMusicMem(SoundManager::GetInstance().GetBGM(BGM_STAGE), DX_PLAYTYPE_BACK);
 		counter++;
-		if (counter > 300)
+		if (counter > 130)
 		{
 			counter = 0;
 			stage_state = STAGE_PLAYING;
 		}
+		if(CheckSoundMem(SoundManager::GetInstance().GetSE(SE_READY)) == false)PlaySoundMem(SoundManager::GetInstance().GetSE(SE_READY), DX_PLAYTYPE_BACK);
 		break;
 	case STAGE_PLAYING:
-
+	if (CheckMusicMem(SoundManager::GetInstance().GetBGM(BGM_STAGE)) == false)PlayMusicMem(SoundManager::GetInstance().GetBGM(BGM_STAGE), DX_PLAYTYPE_BACK);
+		if (isGoSoundPlayed == false )
+		{
+			PlaySoundMem(SoundManager::GetInstance().GetSE(SE_GO), DX_PLAYTYPE_BACK);
+			isGoSoundPlayed = true;
+		}
 		GlidManager::GetInstance().Update(isBallFlying);
 		LauncherController::GetInstance().Update();
 		NextManager::GetInstance().Update();
@@ -82,6 +98,7 @@ void StageUpdate()
 		if (GlidManager::GetInstance().IsClear()) {
 			//scene_next = SCENE_RESULT;
 			stage_state = STAGE_CLEAR;
+			SoundManager::GetInstance().StopAllBGM();
 		}
 		// ゲームオーバー判定
 		else if (GlidManager::GetInstance().IsGameOver()) {
@@ -94,12 +111,17 @@ void StageUpdate()
 		//クリア演出を後で追加
 		LauncherController::GetInstance().Update();
 		NextManager::GetInstance().Update();
-
+		if (CheckMusicMem(SoundManager::GetInstance().GetBGM(BGM_CLEAR)) == false)
+			PlayMusicMem(SoundManager::GetInstance().GetBGM(BGM_CLEAR), DX_PLAYTYPE_BACK);
 		counter++;
-		if (counter > 300)
+		if (counter > 164)
 		{
 			counter = 0;
 			stageNum++;
+			if (stageNum >= STAGE_MAX) {
+				stageNum = 0;
+				scene_next = SCENE_CLEAR;
+			}
 			StageInit();
 		}
 		break;
@@ -122,7 +144,28 @@ void StageUpdate()
 
 	}
 	EffectManager::GetInstance().Update();
+	if (24 < stageNum && stageNum < 27)
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				starY[i] += 1;
+			}
 
+			// 1枚目が下へ行き切った
+			if (starY[0] >= STAR_BG_OFFSET)
+			{
+				starY[0] = starY[1] - STAR_BG_OFFSET;
+			}
+
+			// 2枚目が下へ行き切った
+			if (starY[1] >= STAR_BG_OFFSET)
+			{
+				starY[1] = starY[0] - STAR_BG_OFFSET;
+			}
+		}
+	}
 }
 //---------------------------------------------------------------------------------
 //	描画処理
@@ -130,9 +173,71 @@ void StageUpdate()
 void StageRender()
 {
 
+	if (stageNum < 3)
+	{
 	DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_STAGE1), true);
 	DrawRectRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 - 30, GlidManager::GetInstance().deadLineRowOffset * 128, 0, 128, 162, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_SHUTTER_STAGE1), true);
 	DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 + 8, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WALL_STAGE1), true);
+	}
+	else if (stageNum < 6)
+	{
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_STAGE2), true);
+		DrawRectRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 - 30, GlidManager::GetInstance().deadLineRowOffset * 128, 0, 128, 162, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_SHUTTER_STAGE2), true);
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 + 8, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WALL_STAGE2), true);
+	}
+	else if (stageNum < 9)
+	{
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_STAGE3), true);
+		DrawRectRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 - 30, GlidManager::GetInstance().deadLineRowOffset * 128, 0, 128, 162, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_SHUTTER_STAGE3), true);
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 + 8, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WALL_STAGE3), true);
+	}
+	else if (stageNum < 12)
+	{
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_STAGE4), true);
+		DrawRectRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 - 30, GlidManager::GetInstance().deadLineRowOffset * 128, 0, 128, 162, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_SHUTTER_STAGE4), true);
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 + 8, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WALL_STAGE4), true);
+	}
+	else if (stageNum < 15)
+	{
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_STAGE5), true);
+		DrawRectRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 - 30, GlidManager::GetInstance().deadLineRowOffset * 128, 0, 128, 162, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_SHUTTER_STAGE5), true);
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 + 8, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WALL_STAGE5), true);
+	}
+	else if (stageNum < 18)
+	{
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_STAGE6), true);
+		DrawRectRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 - 30, GlidManager::GetInstance().deadLineRowOffset * 128, 0, 128, 162, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_SHUTTER_STAGE6), true);
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 + 8, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WALL_STAGE6), true);
+	}
+	else if (stageNum < 21)
+	{
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_STAGE7), true);
+		DrawRectRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 - 30, GlidManager::GetInstance().deadLineRowOffset * 128, 0, 128, 162, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_SHUTTER_STAGE7), true);
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 + 8, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WALL_STAGE7), true);
+	}
+	else if (stageNum < 24)
+	{
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_STAGE8), true);
+		DrawRectRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 - 30, GlidManager::GetInstance().deadLineRowOffset * 128, 0, 128, 162, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_SHUTTER_STAGE8), true);
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 + 8, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WALL_STAGE8), true);
+	}
+	else if (stageNum < 27)
+	{
+		//STARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+		DrawRotaGraph(SCREEN_W * 0.5, starY[0], 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_STAR), true);
+		DrawRotaGraph(SCREEN_W * 0.5, starY[1], 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_STAR), true);
+		DrawRectRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 - 30, GlidManager::GetInstance().deadLineRowOffset * 128, 0, 128, 162, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_STAR_SHUTTER), true);
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 + 8, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_STAR_WALL), true);
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H - 8, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_GLASS), true);
+	}
+	else if (stageNum < 30)
+	{
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_STAGE9), true);
+		DrawRectRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 - 30, GlidManager::GetInstance().deadLineRowOffset * 128, 0, 128, 162, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_SHUTTER_STAGE9), true);
+		DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.5 + 8, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_WALL_STAGE9), true);
+	}
+	
+
 	LauncherController::GetInstance().Render();
 	GlidManager::GetInstance().Render();
 	EffectManager::GetInstance().Render();

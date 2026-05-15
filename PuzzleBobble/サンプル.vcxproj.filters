@@ -27,7 +27,7 @@
     <ClCompile Include="program\Main.cpp">
       <Filter>program\System</Filter>
     </ClCompile>
-    <ClCompile Include="program\Result.cpp">
+    <ClCompile Include="program\Clear.cpp">
       <Filter>program\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="program\Stage.cpp">
@@ -69,6 +69,12 @@
     <ClCompile Include="program\EffectManager.cpp">
       <Filter>program\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="program\Ending.cpp">
+      <Filter>program\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="program\Gameover.cpp">
+      <Filter>program\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="program\Float2.h">
@@ -80,7 +86,7 @@
     <ClInclude Include="program\Title.h">
       <Filter>program\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="program\Result.h">
+    <ClInclude Include="program\Clear.h">
       <Filter>program\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="program\Stage.h">
@@ -90,9 +96,6 @@
       <Filter>program\System</Filter>
     </ClInclude>
     <ClInclude Include="program\SceneManager.h">
-      <Filter>program\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundManager.h">
       <Filter>program\Managers</Filter>
     </ClInclude>
     <ClInclude Include="program\ImageManager.h">
@@ -122,11 +125,19 @@
     <ClInclude Include="program\Effect.h">
       <Filter>program\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="program\SoundManager.h">
+      <Filter>program\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="program\Ending.h">
+      <Filter>program\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="program\Gameover.h">
+      <Filter>program\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="program\StageData.inc">
       <Filter>program\inc</Filter>
     </None>
-    <None Include="temp\fix_glidmanager_luminus.ps1" />
   </ItemGroup>
 </Project>

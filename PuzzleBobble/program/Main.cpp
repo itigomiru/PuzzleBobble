@@ -15,7 +15,7 @@ int WINAPI WinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 	SetOutApplicationLogValidFlag( FALSE );
 	ChangeWindowMode( TRUE );
-	SetMainWindowText( "ƒTƒ“ƒvƒ‹" );
+	SetMainWindowText( "Puzzle Bobble" );
 	SetBackgroundColor( 100, 100, 100 );
 
 	SetDoubleStartValidFlag( TRUE );

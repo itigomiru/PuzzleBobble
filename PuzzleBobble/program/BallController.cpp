@@ -6,7 +6,9 @@
 #include "Main.h"
 #include "SceneManager.h"
 #include "ImageManager.h"
+#include "SoundManager.h"
 #include <Math.h>
+
 void BallController::BallBounce(float leftX, float rightX)
 {
     bool reflected = false;
@@ -15,11 +17,13 @@ void BallController::BallBounce(float leftX, float rightX)
         x = leftX + radius; // •Ç‚Ì“à‘¤‚É–ß‚·
         rot = 180.0f - rot;
         reflected = true;
+	PlaySoundMem(SoundManager::GetInstance().GetSE(SE_TAP), DX_PLAYTYPE_BACK);
     }
     if (x + radius > rightX) {
         x = rightX - radius; // •Ç‚Ì“à‘¤‚É–ß‚·
         rot = 180.0f - rot;
         reflected = true;
+	PlaySoundMem(SoundManager::GetInstance().GetSE(SE_TAP), DX_PLAYTYPE_BACK);
     }
     // Šp“x‚ğ0`360“x‚É³‹K‰»
 	if (reflected) {
@@ -50,6 +54,7 @@ void BallController::Update()
 	BallBounce(VS_X, VS_X + VS_W);
     if (GlidManager::GetInstance().CheckCircleCollision(x, y, radius) == true || GlidManager::GetInstance().top > y - radius)
     {
+		PlaySoundMem(SoundManager::GetInstance().GetSE(SE_TAP), DX_PLAYTYPE_BACK);
 		int row, col;
 		GlidManager::GetInstance().GetClosestGlid({ x, y }, row, col);
 	    GlidManager::GetInstance().AddGlid(this->state, row, col);

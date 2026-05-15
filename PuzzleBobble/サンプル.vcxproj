@@ -153,7 +153,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="program\EffectManager.cpp" />
+    <ClCompile Include="program\Ending.cpp" />
     <ClCompile Include="program\Float2.cpp" />
+    <ClCompile Include="program\Gameover.cpp" />
     <ClCompile Include="program\GlidManager.cpp" />
     <ClCompile Include="program\ImageManager.cpp" />
     <ClCompile Include="program\LauncherController.cpp" />
@@ -163,7 +165,7 @@
     <ClCompile Include="program\SceneManager.cpp" />
     <ClCompile Include="program\Hit.cpp" />
     <ClCompile Include="program\Main.cpp" />
-    <ClCompile Include="program\Result.cpp" />
+    <ClCompile Include="program\Clear.cpp" />
     <ClCompile Include="program\BallController.cpp" />
     <ClCompile Include="program\SoundManager.cpp" />
     <ClCompile Include="program\Stage.cpp" />
@@ -172,7 +174,9 @@
   <ItemGroup>
     <ClInclude Include="program\Effect.h" />
     <ClInclude Include="program\EffectManager.h" />
+    <ClInclude Include="program\Ending.h" />
     <ClInclude Include="program\Float2.h" />
+    <ClInclude Include="program\Gameover.h" />
     <ClInclude Include="program\GlidManager.h" />
     <ClInclude Include="program\ImageManager.h" />
     <ClInclude Include="program\LauncherController.h" />
@@ -182,15 +186,14 @@
     <ClInclude Include="program\SceneManager.h" />
     <ClInclude Include="program\Hit.h" />
     <ClInclude Include="program\Main.h" />
-    <ClInclude Include="program\Result.h" />
+    <ClInclude Include="program\Clear.h" />
     <ClInclude Include="program\BallController.h" />
+    <ClInclude Include="program\SoundManager.h" />
     <ClInclude Include="program\Stage.h" />
     <ClInclude Include="program\Title.h" />
-    <ClInclude Include="SoundManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="program\StageData.inc" />
-    <None Include="temp\fix_glidmanager_luminus.ps1" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

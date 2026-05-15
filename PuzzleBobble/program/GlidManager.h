@@ -25,7 +25,7 @@ struct GlidCell
 	bool isGameOverGray = false;
 };
 
-
+const int STAGE_MAX = 30;
 class GlidManager
 {
 public:
@@ -44,7 +44,7 @@ private:
 	int gameOverScanRow = ROWS - 1;
 	int gameOverScanCol = COLS - 1;
 
-	int StageData[7][ROWS][COLS]
+	int StageData[STAGE_MAX][ROWS][COLS]
 		= {
 	#include "StageData.inc"
 	};

@@ -3,7 +3,9 @@
 
 #include "Title.h"	//	タイトル関係の関数を呼びたいので
 #include "Stage.h"	//	ステージ関係の関数を呼びたいので
-#include "Result.h"	//	リザルト（結果表示画面）関係の関数を呼びたいので
+#include "Clear.h"	//	リザルト（結果表示画面）関係の関数を呼びたいので
+#include "Ending.h"	//	エンディング関係の関数を呼びたいので
+#include "Gameover.h"
 
 int scene_num;		//	今どこのシーンにいるのかを見る用の変数
 int scene_next;		//	次のシーン番号を入れる用の変数
@@ -43,9 +45,16 @@ void SceneManagerUpdate()
 			StageInit();
 			break;
 
-		case SCENE_RESULT:
-			ResultInit();
+		case SCENE_CLEAR:
+			ClearInit();
 			break;
+		case SCENE_ENDING:
+			EndingInit();
+			break;
+		case SCENE_GAMEOVER:
+			GameoverInit();
+			break;
+			
 		}
 	}
 
@@ -59,8 +68,14 @@ void SceneManagerUpdate()
 		StageUpdate();
 		break;
 
-	case SCENE_RESULT:
-		ResultUpdate();
+	case SCENE_CLEAR:
+		ClearUpdate();
+		break;
+	case SCENE_ENDING:
+		EndingUpdate();
+		break;
+	case SCENE_GAMEOVER:
+		GameoverUpdate();
 		break;
 	}
 }
@@ -79,8 +94,14 @@ void SceneManagerRender()
 		StageRender();
 		break;
 
-	case SCENE_RESULT:
-		ResultRender();
+	case SCENE_CLEAR:
+		ClearRender();
+		break;
+	case SCENE_ENDING:
+		EndingRender();
+		break;
+	case SCENE_GAMEOVER:
+		GameoverRender();
 		break;
 	}
 }
@@ -91,6 +112,6 @@ void SceneManagerExit()
 {
 	TitleExit();
 	StageExit();
-	ResultExit();
+	ClearExit();
 
 }

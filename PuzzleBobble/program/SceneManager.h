@@ -18,7 +18,9 @@ void SceneManagerExit();	//	終了処理
 enum {
 	SCENE_TITLE,	//	０：タイトル
 	SCENE_STAGE,	//	１：ステージ
-	SCENE_RESULT,	//	２：リザルト（結果表示画面）
+	SCENE_CLEAR,	//	２：リザルト（結果表示画面）
+	SCENE_ENDING,
+	SCENE_GAMEOVER,
 };
 
 //	いろんなファイルで使う変数なので外部参照宣言しています

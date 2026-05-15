@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "ImageManager.h"
 #include "EffectManager.h"
+#include "SoundManager.h"
 GlidManager& GlidManager::GetInstance()
 {
 	static GlidManager instance;
@@ -217,7 +218,7 @@ void GlidManager::NotifyBallLanded()
 		dropTimer = 0; // タイマーリセット
 		top += 28.0f; // 天井を一段分下げる
 		deadLineRowOffset++; // 天井が一行分下がったので、デッドラインの行も一つ上に上げる
-
+		PlaySoundMem(SoundManager::GetInstance().GetSE(SE_TOP), DX_PLAYTYPE_BACK);
 		// 全てのセルの位置を再計算してずらす
 		const float rowDistance = 28.0f;
 		for (int row = 0; row < ROWS; ++row) {
@@ -315,6 +316,8 @@ void GlidManager::CheckMatchAndRemoveGlid(int NewR, int NewC, int state)
 			glid[pos.first][pos.second].state = EMPTY;
 			EffectManager::GetInstance().AddPopEffect(glid[pos.first][pos.second].pos.x, glid[pos.first][pos.second].pos.y, state);
 			EffectManager::GetInstance().AddDropMonsterEffect(glid[pos.first][pos.second].pos.x, glid[pos.first][pos.second].pos.y, state);
+			PlaySoundMem(SoundManager::GetInstance().GetSE(SE_POP), DX_PLAYTYPE_BACK);
+			PlaySoundMem(SoundManager::GetInstance().GetSE(SE_TAPPOP), DX_PLAYTYPE_BACK);
 		}
 	}
 }
@@ -370,6 +373,7 @@ void GlidManager::CheckConnectAndRemoveGlid()
 			if (glid[row][col].state != EMPTY && glid[row][col].state != INVALID && !visited[row][col]) {
 				EffectManager::GetInstance().AddDropBubbleEffect(glid[row][col].pos.x, glid[row][col].pos.y, glid[row][col].state);
 				glid[row][col].state = EMPTY; // 天井から切り離されているので消去
+				PlaySoundMem(SoundManager::GetInstance().GetSE(SE_POPCOMBO), DX_PLAYTYPE_BACK);
 			}
 		}
 	}
@@ -446,5 +450,7 @@ void GlidManager::GameOver()
 		gameOverGrayTimer = 0;
 		gameOverScanRow = ROWS - 1;
 		gameOverScanCol = COLS - 1;
+		SoundManager::GetInstance().StopAllBGM();
+		PlaySoundMem(SoundManager::GetInstance().GetSE(SE_MISS), DX_PLAYTYPE_BACK);
 	}
 }
