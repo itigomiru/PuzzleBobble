@@ -147,7 +147,7 @@ void StageUpdate()
 		}
 
 		// ƒNƒŠƒA”»’è
-		if (GlidManager::GetInstance().IsClear()) {
+		if (GlidManager::GetInstance().IsClear() || PushHitKey(KEY_INPUT_0)) {
 			//scene_next = SCENE_RESULT;
 			int elapsedSeconds = stageTimer / 60;
 			if (elapsedSeconds <= 5) {
