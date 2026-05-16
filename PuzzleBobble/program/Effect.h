@@ -123,14 +123,14 @@ private:
 	static constexpr int STOP_FRAMES = 30;
 	static constexpr int TOTAL_FRAMES = 90;
 	static constexpr float START_X = 0.0f;
-	static constexpr float START_Y = 0.0f;
+	static constexpr float START_Y = 25.0f;
 	static constexpr float TARGET_X = SCREEN_W * 0.5f;
 	static constexpr float TARGET_Y = 25;
-	static constexpr float ARC_HEIGHT = -32.0f;
+	static constexpr float ARC_HEIGHT = 32.0f;
 	static constexpr float EXIT_SPEED = 1.0f;
-	static constexpr float TEXT_SCALE = 1.0f;
+	static constexpr float TEXT_SCALE = 2.0f;
 	static constexpr int DIGIT_WIDTH = 16;
-	static constexpr int DIGIT_SPACING = 14;
+	static constexpr int DIGIT_SPACING = 28;
 
 public:
 	DropScoreEffect(int score)

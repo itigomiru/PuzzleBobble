@@ -6,6 +6,7 @@
 #include "Clear.h"	//	リザルト（結果表示画面）関係の関数を呼びたいので
 #include "Ending.h"	//	エンディング関係の関数を呼びたいので
 #include "Gameover.h"
+#include "ImageManager.h"
 
 int scene_num;		//	今どこのシーンにいるのかを見る用の変数
 int scene_next;		//	次のシーン番号を入れる用の変数
@@ -104,6 +105,9 @@ void SceneManagerRender()
 		GameoverRender();
 		break;
 	}
+	DrawRotaGraph(SCREEN_W * 0.8, SCREEN_H * 0.99 - 2, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_CREDIT), true);
+	DrawRotaGraph(SCREEN_W * 0.5, SCREEN_H * 0.99 - 2, 2.0f, 0, ImageManager::GetInstance().GetImage(IMAGE_LEVEL), true);
+	
 }
 //---------------------------------------------------------------------------------
 //	終了処理

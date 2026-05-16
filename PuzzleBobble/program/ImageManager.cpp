@@ -99,6 +99,8 @@ ImageManager::ImageManager()
 	images[IMAGE_GAMEOVER] = LoadGraph("data/image/gameover.png");
 	images[IMAGE_SEC] = LoadGraph("data/image/sec.png");
 	images[IMAGE_PTS] = LoadGraph("data/image/pts.png");
+	images[IMAGE_CREDIT] = LoadGraph("data/image/credit.png");
+	images[IMAGE_LEVEL] = LoadGraph("data/image/level.png");
 }
 
 ImageManager::~ImageManager()
